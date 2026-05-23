@@ -2,49 +2,65 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PANDA MUSIC</title>
+<title>PANDA Music</title>
 
 <style>
-body {
+* {
     margin:0;
-    font-family:Arial;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body {
     background:#000;
     color:white;
+    overflow:hidden;
+}
+
+/* LAYOUT */
+.container {
     display:flex;
     height:100vh;
 }
 
 /* SIDEBAR */
 .sidebar {
-    width:260px;
+    width:250px;
     background:#0f0f0f;
-    padding:15px;
-    overflow-y:auto;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
 }
 
 .logo {
     font-size:22px;
     font-weight:bold;
     color:#1db954;
-    margin-bottom:20px;
+    margin-bottom:10px;
+    animation:fadeIn 1s ease;
 }
 
-.song {
+.nav-item {
     padding:10px;
-    border-radius:6px;
+    border-radius:8px;
     cursor:pointer;
-    font-size:14px;
+    transition:0.3s;
+    opacity:0.8;
 }
 
-.song:hover {
+.nav-item:hover {
     background:#1db954;
     color:black;
+    transform:translateX(5px);
+    opacity:1;
 }
 
 /* MAIN */
 .main {
     flex:1;
-    background:#121212;
+    background:linear-gradient(#1a1a1a, #000);
     display:flex;
     flex-direction:column;
 }
@@ -52,14 +68,45 @@ body {
 /* TOP BAR */
 .topbar {
     padding:15px;
-    background:#181818;
+    background:#121212;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.search {
+    width:300px;
+    padding:8px;
+    border:none;
+    border-radius:20px;
+    outline:none;
 }
 
 /* CONTENT */
 .content {
     flex:1;
-    overflow-y:auto;
+    overflow:auto;
     padding:20px;
+}
+
+.card-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+    gap:15px;
+}
+
+.card {
+    background:#181818;
+    padding:15px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.3s;
+    animation:fadeUp 0.6s ease;
+}
+
+.card:hover {
+    background:#282828;
+    transform:scale(1.05);
 }
 
 /* PLAYER */
@@ -69,109 +116,136 @@ body {
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 20px;
+    padding:10px 20px;
     border-top:1px solid #333;
+    animation:slideUp 0.5s ease;
+}
+
+.song-info {
+    display:flex;
+    flex-direction:column;
+}
+
+.song-title {
+    font-size:14px;
+}
+
+.song-status {
+    font-size:12px;
+    opacity:0.7;
 }
 
 .controls {
-    display:flex;
-    flex-direction:column;
     width:60%;
-}
-
-button {
-    background:#1db954;
-    border:none;
-    padding:8px 12px;
-    border-radius:20px;
-    cursor:pointer;
 }
 
 audio {
     width:100%;
 }
 
-.title {
-    font-size:14px;
-    margin-bottom:5px;
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@keyframes fadeUp {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+@keyframes slideUp {
+    from {transform:translateY(100%);}
+    to {transform:translateY(0);}
 }
 </style>
+
 </head>
 
 <body>
 
+<div class="container">
+
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">🎧 PANDA</div>
-    <div id="list"></div>
+    <div class="nav-item">🏠 Home</div>
+    <div class="nav-item">🔎 Search</div>
+    <div class="nav-item">📂 Library</div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
     <div class="topbar">
-        Spotify Style Player (PANDA MUSIC)
+        <input class="search" placeholder="Search songs...">
+        <div>Premium UI Clone</div>
     </div>
 
     <div class="content">
-        <h2>Playlist</h2>
-        <p>English & Mandarin Hits (1000 songs ready)</p>
+        <h2>Good Evening</h2>
+        <br>
+
+        <div class="card-grid" id="grid"></div>
     </div>
 
-    <!-- PLAYER BOTTOM -->
+    <!-- PLAYER -->
     <div class="player">
+        <div class="song-info">
+            <div class="song-title" id="title">No song playing</div>
+            <div class="song-status">PANDA MUSIC</div>
+        </div>
+
         <div class="controls">
-            <div class="title" id="title">No song playing</div>
             <audio id="audio" controls></audio>
         </div>
-        <button onclick="nextSong()">Next ▶</button>
     </div>
+
+</div>
 
 </div>
 
 <script>
 
-// 🎵 REAL MP3 DATABASE (contoh, kamu bisa expand jadi 1000)
+// 🎵 1000 fake Spotify-style tracks
 const songs = [];
 
 for (let i = 1; i <= 1000; i++) {
     songs.push({
-        title: "PANDA Song " + i,
+        title: "PANDA Hit " + i,
+        artist: i % 2 === 0 ? "English Pop" : "Mandarin Hits",
         url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     });
 }
 
-let currentIndex = 0;
-
-const list = document.getElementById("list");
+const grid = document.getElementById("grid");
 const audio = document.getElementById("audio");
 const title = document.getElementById("title");
 
-// render list
-songs.forEach((song, index) => {
-    let div = document.createElement("div");
-    div.className = "song";
-    div.innerText = song.title;
+function render() {
+    songs.slice(0, 60).forEach((song, index) => {
+        let card = document.createElement("div");
+        card.className = "card";
 
-    div.onclick = () => play(index);
+        card.innerHTML = `
+            <h4>${song.title}</h4>
+            <p>${song.artist}</p>
+        `;
 
-    list.appendChild(div);
-});
+        card.onclick = () => play(index);
 
-function play(index) {
-    currentIndex = index;
+        grid.appendChild(card);
+    });
+}
 
-    audio.src = songs[index].url;
-    title.innerText = songs[index].title;
-
+function play(i) {
+    audio.src = songs[i].url;
     audio.play();
+
+    title.innerText = songs[i].title;
 }
 
-function nextSong() {
-    currentIndex++;
-    if (currentIndex >= songs.length) currentIndex = 0;
-    play(currentIndex);
-}
+render();
 
 </script>
 

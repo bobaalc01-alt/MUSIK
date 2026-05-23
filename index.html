@@ -1,252 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>PANDA Music</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PANDA Music Player</title>
 
-<style>
-* {
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, sans-serif;
-}
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-    background:#000;
-    color:white;
-    overflow:hidden;
-}
+    header {
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      background: #111827;
+    }
 
-/* LAYOUT */
-.container {
-    display:flex;
-    height:100vh;
-}
+    .container {
+      padding: 20px;
+    }
 
-/* SIDEBAR */
-.sidebar {
-    width:250px;
-    background:#0f0f0f;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-}
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+    }
 
-.logo {
-    font-size:22px;
-    font-weight:bold;
-    color:#1db954;
-    margin-bottom:10px;
-    animation:fadeIn 1s ease;
-}
+    button:hover {
+      background: #1d4ed8;
+    }
 
-.nav-item {
-    padding:10px;
-    border-radius:8px;
-    cursor:pointer;
-    transition:0.3s;
-    opacity:0.8;
-}
+    #player {
+      margin-top: 20px;
+    }
 
-.nav-item:hover {
-    background:#1db954;
-    color:black;
-    transform:translateX(5px);
-    opacity:1;
-}
-
-/* MAIN */
-.main {
-    flex:1;
-    background:linear-gradient(#1a1a1a, #000);
-    display:flex;
-    flex-direction:column;
-}
-
-/* TOP BAR */
-.topbar {
-    padding:15px;
-    background:#121212;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.search {
-    width:300px;
-    padding:8px;
-    border:none;
-    border-radius:20px;
-    outline:none;
-}
-
-/* CONTENT */
-.content {
-    flex:1;
-    overflow:auto;
-    padding:20px;
-}
-
-.card-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
-    gap:15px;
-}
-
-.card {
-    background:#181818;
-    padding:15px;
-    border-radius:12px;
-    cursor:pointer;
-    transition:0.3s;
-    animation:fadeUp 0.6s ease;
-}
-
-.card:hover {
-    background:#282828;
-    transform:scale(1.05);
-}
-
-/* PLAYER */
-.player {
-    height:90px;
-    background:#181818;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:10px 20px;
-    border-top:1px solid #333;
-    animation:slideUp 0.5s ease;
-}
-
-.song-info {
-    display:flex;
-    flex-direction:column;
-}
-
-.song-title {
-    font-size:14px;
-}
-
-.song-status {
-    font-size:12px;
-    opacity:0.7;
-}
-
-.controls {
-    width:60%;
-}
-
-audio {
-    width:100%;
-}
-
-/* ANIMATIONS */
-@keyframes fadeIn {
-    from {opacity:0;}
-    to {opacity:1;}
-}
-
-@keyframes fadeUp {
-    from {opacity:0; transform:translateY(20px);}
-    to {opacity:1; transform:translateY(0);}
-}
-
-@keyframes slideUp {
-    from {transform:translateY(100%);}
-    to {transform:translateY(0);}
-}
-</style>
-
+    .playlist-title {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #93c5fd;
+    }
+  </style>
 </head>
 
 <body>
 
+<header>🐼 PANDA Music Player</header>
+
 <div class="container">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <div class="logo">🎧 PANDA</div>
-    <div class="nav-item">🏠 Home</div>
-    <div class="nav-item">🔎 Search</div>
-    <div class="nav-item">📂 Library</div>
-</div>
+  <div>
+    <button onclick="loadPlaylist('english')">English Playlist</button>
+    <button onclick="loadPlaylist('mandarin')">Mandarin Playlist</button>
+  </div>
 
-<!-- MAIN -->
-<div class="main">
+  <div class="playlist-title" id="title">Pilih Playlist</div>
 
-    <div class="topbar">
-        <input class="search" placeholder="Search songs...">
-        <div>Premium UI Clone</div>
-    </div>
+  <div id="player"></div>
 
-    <div class="content">
-        <h2>Good Evening</h2>
-        <br>
-
-        <div class="card-grid" id="grid"></div>
-    </div>
-
-    <!-- PLAYER -->
-    <div class="player">
-        <div class="song-info">
-            <div class="song-title" id="title">No song playing</div>
-            <div class="song-status">PANDA MUSIC</div>
-        </div>
-
-        <div class="controls">
-            <audio id="audio" controls></audio>
-        </div>
-    </div>
+  <div>
+    <button onclick="prevVideo()">⏮ Prev</button>
+    <button onclick="nextVideo()">Next ⏭</button>
+  </div>
 
 </div>
 
-</div>
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
+  // Playlist video ID (ganti sesuai kebutuhan)
+  const playlists = {
+    english: [
+      "3JZ_D3ELwOQ", // contoh: English song
+      "fJ9rUzIMcZQ",
+      "ktvTqknDobU"
+    ],
+    mandarin: [
+      "2Vv-BfVoq4g", // contoh: Mandarin song (ganti sesuai)
+      "EATpWcVvX0Q",
+      "RgKAFK5djSk"
+    ]
+  };
 
-// 🎵 1000 fake Spotify-style tracks
-const songs = [];
+  let player;
+  let currentList = [];
+  let currentIndex = 0;
 
-for (let i = 1; i <= 1000; i++) {
-    songs.push({
-        title: "PANDA Hit " + i,
-        artist: i % 2 === 0 ? "English Pop" : "Mandarin Hits",
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '360',
+      width: '640',
+      videoId: '',
+      playerVars: {
+        autoplay: 0,
+        controls: 1
+      },
+      events: {
+        onStateChange: onPlayerStateChange
+      }
     });
-}
+  }
 
-const grid = document.getElementById("grid");
-const audio = document.getElementById("audio");
-const title = document.getElementById("title");
+  function loadPlaylist(type) {
+    currentList = playlists[type];
+    currentIndex = 0;
 
-function render() {
-    songs.slice(0, 60).forEach((song, index) => {
-        let card = document.createElement("div");
-        card.className = "card";
+    document.getElementById("title").innerText =
+      type === "english" ? "🎵 English Playlist" : "🎵 Mandarin Playlist";
 
-        card.innerHTML = `
-            <h4>${song.title}</h4>
-            <p>${song.artist}</p>
-        `;
+    playVideo();
+  }
 
-        card.onclick = () => play(index);
+  function playVideo() {
+    const videoId = currentList[currentIndex];
+    player.loadVideoById(videoId);
+  }
 
-        grid.appendChild(card);
-    });
-}
+  function nextVideo() {
+    if (currentIndex < currentList.length - 1) {
+      currentIndex++;
+      playVideo();
+    }
+  }
 
-function play(i) {
-    audio.src = songs[i].url;
-    audio.play();
+  function prevVideo() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      playVideo();
+    }
+  }
 
-    title.innerText = songs[i].title;
-}
-
-render();
-
+  function onPlayerStateChange(event) {
+    // Auto next saat video selesai
+    if (event.data === YT.PlayerState.ENDED) {
+      nextVideo();
+    }
+  }
 </script>
 
 </body>

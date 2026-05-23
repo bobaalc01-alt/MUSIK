@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>PANDA Music YouTube</title>
+<meta charset="UTF-8">
+<title>PANDA MUSIC</title>
 
 <style>
 body {
     margin:0;
-    font-family:Arial;
+    font-family:Arial, sans-serif;
     background:#0f0f0f;
     color:white;
 }
 
 header {
+    background:#181818;
     padding:15px;
     text-align:center;
-    background:#181818;
-    color:#1db954;
     font-size:22px;
     font-weight:bold;
+    color:#1db954;
 }
 
 .container {
@@ -26,18 +26,19 @@ header {
     height:100vh;
 }
 
+/* SIDEBAR */
 .sidebar {
-    width:350px;
+    width:320px;
     background:#121212;
-    overflow-y:auto;
     border-right:1px solid #333;
+    overflow-y:auto;
 }
 
-.search {
+.searchBox {
     padding:10px;
 }
 
-.search input {
+.searchBox input {
     width:100%;
     padding:10px;
     border:none;
@@ -46,8 +47,8 @@ header {
 
 .song {
     padding:10px;
-    cursor:pointer;
     border-bottom:1px solid #222;
+    cursor:pointer;
 }
 
 .song:hover {
@@ -55,114 +56,130 @@ header {
     color:black;
 }
 
+/* MAIN */
 .main {
     flex:1;
     display:flex;
+    flex-direction:column;
     justify-content:center;
     align-items:center;
-    flex-direction:column;
 }
 
-iframe {
+#player {
     width:80%;
-    height:400px;
+    height:420px;
     border:none;
 }
+
+.title {
+    margin-bottom:10px;
+    color:#fff;
+}
 </style>
+
 </head>
 
 <body>
 
-<header>PANDA MUSIC 🎵 (YouTube Edition)</header>
+<header>PANDA MUSIC 🎧</header>
 
 <div class="container">
 
 <div class="sidebar">
-    <div class="search">
-        <input id="searchBox" placeholder="Search YouTube music...">
+    <div class="searchBox">
+        <input id="search" placeholder="Search English / Mandarin songs...">
     </div>
     <div id="list"></div>
 </div>
 
 <div class="main">
-    <h2 id="title">Select a song</h2>
+    <div class="title" id="title">Select a song</div>
     <iframe id="player" allow="autoplay"></iframe>
 </div>
 
 </div>
 
 <script>
-const API_KEY = "YOUR_YOUTUBE_API_KEY";
+const API_KEY = "YOUR_API_KEY";
 
-// default playlist query (English + Mandarin Hits)
-let queries = [
-    "top english songs",
-    "mandarin hits songs",
-    "taylor swift",
-    "billie eilish",
-    "jay chou",
-    "chinese pop songs"
+// 🔥 Query dibuat untuk menghasilkan banyak lagu (≈1000 hasil total)
+const queries = [
+    "top english songs 2025",
+    "english hits playlist",
+    "taylor swift hits",
+    "billie eilish songs",
+    "ed sheeran playlist",
+    "top mandarin songs",
+    "mandarin pop hits",
+    "jay chou songs",
+    "chinese pop music",
+    "c-pop hits playlist"
 ];
 
 let songs = [];
 
-async function searchYouTube(query) {
+// 🎯 ambil dari YouTube API
+async function fetchSongs(q) {
     const url =
-    `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${query}&key=${API_KEY}`;
+    `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&q=${encodeURIComponent(q)}&key=${API_KEY}`;
 
-    let res = await fetch(url);
-    let data = await res.json();
+    const res = await fetch(url);
+    const data = await res.json();
 
-    return data.items.map(item => ({
-        title: item.snippet.title,
-        videoId: item.id.videoId
+    return data.items.map(v => ({
+        title: v.snippet.title,
+        id: v.id.videoId
     }));
 }
 
-// load initial 100+ songs
-async function loadAll() {
+// 🔥 load banyak lagu (gabungan semua query)
+async function loadSongs() {
     songs = [];
+
     for (let q of queries) {
-        let result = await searchYouTube(q);
+        let result = await fetchSongs(q);
         songs = songs.concat(result);
     }
-    renderList(songs);
+
+    render(songs);
 }
 
-function renderList(list) {
-    let box = document.getElementById("list");
+// 🎵 render list
+function render(list) {
+    const box = document.getElementById("list");
     box.innerHTML = "";
 
     list.forEach(song => {
         let div = document.createElement("div");
         div.className = "song";
-        div.innerText = song.title;
+        div.textContent = song.title;
 
-        div.onclick = () => {
-            play(song);
-        };
+        div.onclick = () => play(song);
 
         box.appendChild(div);
     });
 }
 
+// ▶️ play video
 function play(song) {
     document.getElementById("title").innerText = song.title;
 
     document.getElementById("player").src =
-    `https://www.youtube.com/embed/${song.videoId}?autoplay=1`;
+    `https://www.youtube.com/embed/${song.id}?autoplay=1`;
 }
 
-// search filter
-document.getElementById("searchBox").addEventListener("input", function(e) {
+// 🔎 search
+document.getElementById("search").addEventListener("input", (e) => {
     let val = e.target.value.toLowerCase();
+
     let filtered = songs.filter(s =>
         s.title.toLowerCase().includes(val)
     );
-    renderList(filtered);
+
+    render(filtered);
 });
 
-loadAll();
+loadSongs();
 </script>
 
 </body>

@@ -1,239 +1,520 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VideoGo</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:Arial, sans-serif;
-    }
+<title>VideoGo</title>
 
-    body{
-      background:#111;
-      color:white;
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    header{
-      background:#ff0000;
-      padding:15px;
-      text-align:center;
-      font-size:22px;
-      font-weight:bold;
-    }
+<style>
 
-    .search-box{
-      padding:10px;
-      background:#1b1b1b;
-    }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Roboto',sans-serif;
+}
 
-    .search-box input{
-      width:100%;
-      padding:12px;
-      border:none;
-      border-radius:8px;
-      outline:none;
-      font-size:16px;
-    }
+body{
+  background:#0f0f0f;
+  color:white;
+}
 
-    .video-list{
-      padding:10px;
-    }
+/* HEADER */
 
-    .video-card{
-      background:#1d1d1d;
-      margin-bottom:15px;
-      border-radius:10px;
-      overflow:hidden;
-    }
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  height:60px;
+  background:#121212;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  z-index:1000;
+  border-bottom:1px solid #222;
+}
 
-    .thumbnail{
-      width:100%;
-      height:200px;
-      object-fit:cover;
-    }
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:22px;
+  font-weight:bold;
+  color:#ff0000;
+}
 
-    .video-info{
-      padding:10px;
-    }
+.logo-icon{
+  width:35px;
+  height:25px;
+  background:#ff0000;
+  border-radius:8px;
+  position:relative;
+}
 
-    .video-title{
-      font-size:18px;
-      margin-bottom:8px;
-    }
+.logo-icon::after{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-40%,-50%);
+  border-left:10px solid white;
+  border-top:7px solid transparent;
+  border-bottom:7px solid transparent;
+}
 
-    .video-actions{
-      display:flex;
-      justify-content:space-between;
-      margin-top:10px;
-    }
+.profile{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  background:#444;
+}
 
-    button{
-      background:#ff0000;
-      color:white;
-      border:none;
-      padding:10px 15px;
-      border-radius:6px;
-      cursor:pointer;
-    }
+/* SEARCH */
 
-    button:hover{
-      background:#cc0000;
-    }
+.search-container{
+  margin-top:70px;
+  padding:15px;
+}
 
-    .player-container{
-      display:none;
-      position:fixed;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background:black;
-      z-index:999;
-      justify-content:center;
-      align-items:center;
-      flex-direction:column;
-    }
+.search-box{
+  width:100%;
+  background:#1f1f1f;
+  border:none;
+  outline:none;
+  color:white;
+  padding:14px;
+  border-radius:12px;
+  font-size:16px;
+}
 
-    video{
-      width:100%;
-      max-height:80%;
-    }
+/* CATEGORY */
 
-    .close-btn{
-      margin-top:20px;
-    }
-  </style>
+.categories{
+  display:flex;
+  overflow-x:auto;
+  padding:0 15px 15px;
+  gap:10px;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.category{
+  min-width:max-content;
+  background:#272727;
+  padding:10px 16px;
+  border-radius:20px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.category.active{
+  background:#ff0000;
+}
+
+/* VIDEO LIST */
+
+.video-list{
+  padding:0 15px 90px;
+}
+
+.video-card{
+  margin-bottom:25px;
+}
+
+.thumbnail-container{
+  position:relative;
+}
+
+.thumbnail{
+  width:100%;
+  height:210px;
+  object-fit:cover;
+  border-radius:15px;
+}
+
+.duration{
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  background:rgba(0,0,0,0.8);
+  padding:4px 8px;
+  border-radius:5px;
+  font-size:12px;
+}
+
+.video-info{
+  display:flex;
+  margin-top:10px;
+  gap:12px;
+}
+
+.channel-avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:#444;
+}
+
+.video-text{
+  flex:1;
+}
+
+.video-title{
+  font-size:16px;
+  font-weight:500;
+  line-height:1.4;
+}
+
+.video-meta{
+  margin-top:6px;
+  color:#aaa;
+  font-size:13px;
+}
+
+/* BUTTONS */
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+.btn{
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:500;
+}
+
+.play-btn{
+  background:#ff0000;
+  color:white;
+}
+
+.download-btn{
+  background:#2b2b2b;
+  color:white;
+}
+
+/* PLAYER */
+
+.player-modal{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  display:none;
+  flex-direction:column;
+  z-index:9999;
+}
+
+video{
+  width:100%;
+  margin-top:70px;
+}
+
+.player-controls{
+  padding:20px;
+}
+
+.close-btn{
+  background:red;
+  color:white;
+  border:none;
+  padding:12px;
+  border-radius:10px;
+  width:100%;
+  margin-top:20px;
+}
+
+/* NAVIGATION */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height:65px;
+  background:#121212;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  border-top:1px solid #222;
+}
+
+.nav-item{
+  text-align:center;
+  color:#bbb;
+  font-size:12px;
+}
+
+.nav-item.active{
+  color:#ff0000;
+}
+
+.nav-icon{
+  font-size:22px;
+  margin-bottom:3px;
+}
+
+</style>
 </head>
+
 <body>
 
 <header>
-  VideoGo
+
+  <div class="logo">
+    <div class="logo-icon"></div>
+    VideoGo
+  </div>
+
+  <div class="profile"></div>
+
 </header>
 
-<div class="search-box">
-  <input type="text" placeholder="Cari video...">
+<div class="search-container">
+  <input
+    type="text"
+    class="search-box"
+    placeholder="Cari video..."
+  >
+</div>
+
+<div class="categories">
+
+  <div class="category active">Semua</div>
+  <div class="category">Gaming</div>
+  <div class="category">Musik</div>
+  <div class="category">Film</div>
+  <div class="category">Teknologi</div>
+  <div class="category">Olahraga</div>
+
 </div>
 
 <div class="video-list">
 
+  <!-- VIDEO 1 -->
+
   <div class="video-card">
-    <img 
-      class="thumbnail"
-      src="https://picsum.photos/500/300"
-      alt="thumbnail"
-    >
+
+    <div class="thumbnail-container">
+
+      <img
+        src="https://picsum.photos/600/350?1"
+        class="thumbnail"
+      >
+
+      <div class="duration">12:45</div>
+
+    </div>
 
     <div class="video-info">
-      <div class="video-title">
-        Sample Video 1
+
+      <div class="channel-avatar"></div>
+
+      <div class="video-text">
+
+        <div class="video-title">
+          Tutorial Membuat Aplikasi Streaming Hemat Data
+        </div>
+
+        <div class="video-meta">
+          VideoGo Official • 1,2 jt views • 2 hari lalu
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="btn play-btn"
+            onclick="playVideo('sample.mp4')"
+          >
+            ▶ Putar
+          </button>
+
+          <button
+            class="btn download-btn"
+            onclick="downloadVideo('sample.mp4')"
+          >
+            ⬇ Download
+          </button>
+
+        </div>
+
       </div>
 
-      <small>Hemat data • 360p</small>
-
-      <div class="video-actions">
-        <button onclick="playVideo('sample.mp4')">
-          Putar
-        </button>
-
-        <button onclick="downloadVideo('sample.mp4')">
-          Download
-        </button>
-      </div>
     </div>
+
   </div>
 
+  <!-- VIDEO 2 -->
+
   <div class="video-card">
-    <img 
-      class="thumbnail"
-      src="https://picsum.photos/500/301"
-      alt="thumbnail"
-    >
+
+    <div class="thumbnail-container">
+
+      <img
+        src="https://picsum.photos/600/350?2"
+        class="thumbnail"
+      >
+
+      <div class="duration">08:10</div>
+
+    </div>
 
     <div class="video-info">
-      <div class="video-title">
-        Sample Video 2
+
+      <div class="channel-avatar"></div>
+
+      <div class="video-text">
+
+        <div class="video-title">
+          Belajar HTML Full Course Bahasa Indonesia
+        </div>
+
+        <div class="video-meta">
+          Code Academy • 980 rb views • 5 hari lalu
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="btn play-btn"
+            onclick="playVideo('sample2.mp4')"
+          >
+            ▶ Putar
+          </button>
+
+          <button
+            class="btn download-btn"
+            onclick="downloadVideo('sample2.mp4')"
+          >
+            ⬇ Download
+          </button>
+
+        </div>
+
       </div>
 
-      <small>Mode offline • 240p</small>
-
-      <div class="video-actions">
-        <button onclick="playVideo('sample2.mp4')">
-          Putar
-        </button>
-
-        <button onclick="downloadVideo('sample2.mp4')">
-          Download
-        </button>
-      </div>
     </div>
+
   </div>
 
 </div>
 
-<div class="player-container" id="playerContainer">
+<!-- PLAYER -->
 
-  <video id="videoPlayer" controls>
-    <source id="videoSource" src="" type="video/mp4">
+<div class="player-modal" id="playerModal">
+
+  <video controls id="videoPlayer">
+
+    <source
+      src=""
+      id="videoSource"
+      type="video/mp4"
+    >
+
   </video>
 
-  <button class="close-btn" onclick="closePlayer()">
-    Tutup
-  </button>
+  <div class="player-controls">
+
+    <h2>Sedang Memutar...</h2>
+
+    <button
+      class="close-btn"
+      onclick="closePlayer()"
+    >
+      Tutup Player
+    </button>
+
+  </div>
+
+</div>
+
+<!-- NAVIGATION -->
+
+<div class="bottom-nav">
+
+  <div class="nav-item active">
+    <div class="nav-icon">🏠</div>
+    Home
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">🔥</div>
+    Trending
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">⬇</div>
+    Download
+  </div>
+
+  <div class="nav-item">
+    <div class="nav-icon">👤</div>
+    Akun
+  </div>
 
 </div>
 
 <script>
 
-  function playVideo(videoUrl){
+function playVideo(video){
 
-    const playerContainer =
-      document.getElementById('playerContainer');
+  const modal =
+    document.getElementById('playerModal');
 
-    const videoPlayer =
-      document.getElementById('videoPlayer');
+  const source =
+    document.getElementById('videoSource');
 
-    const videoSource =
-      document.getElementById('videoSource');
+  const player =
+    document.getElementById('videoPlayer');
 
-    videoSource.src = videoUrl;
+  source.src = video;
 
-    videoPlayer.load();
-    videoPlayer.play();
+  player.load();
 
-    playerContainer.style.display = 'flex';
-  }
+  player.play();
 
-  function closePlayer(){
+  modal.style.display = 'flex';
+}
 
-    const playerContainer =
-      document.getElementById('playerContainer');
+function closePlayer(){
 
-    const videoPlayer =
-      document.getElementById('videoPlayer');
+  const modal =
+    document.getElementById('playerModal');
 
-    videoPlayer.pause();
+  const player =
+    document.getElementById('videoPlayer');
 
-    playerContainer.style.display = 'none';
-  }
+  player.pause();
 
-  function downloadVideo(url){
+  modal.style.display = 'none';
+}
 
-    const a = document.createElement('a');
+function downloadVideo(url){
 
-    a.href = url;
-    a.download = url;
+  const a = document.createElement('a');
 
-    document.body.appendChild(a);
+  a.href = url;
 
-    a.click();
+  a.download = url;
 
-    document.body.removeChild(a);
-  }
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+}
 
 </script>
 

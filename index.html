@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spotify Panda 🐼 Mandarin Hits</title>
+<title>Spotify Panda 🐼</title>
 
 <style>
 
@@ -40,7 +40,7 @@ margin-bottom:30px;
 }
 
 .logo span{
-color:#1db954;
+color:#1DB954;
 }
 
 .menu{
@@ -69,15 +69,15 @@ overflow:auto;
 .title{
 font-size:30px;
 margin-bottom:20px;
-color:#1db954;
+color:#1DB954;
 }
 
 .search{
 width:100%;
 padding:14px;
+background:#1e1e1e;
 border:none;
 border-radius:12px;
-background:#1e1e1e;
 color:white;
 margin-bottom:20px;
 }
@@ -88,12 +88,12 @@ margin-bottom:20px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:15px;
 background:#181818;
+padding:15px;
 margin:10px 0;
 border-radius:12px;
-transition:0.3s;
 cursor:pointer;
+transition:0.3s;
 }
 
 .song:hover{
@@ -116,7 +116,7 @@ margin-top:4px;
 display:inline-block;
 margin-top:5px;
 padding:4px 8px;
-background:#1db954;
+background:#1DB954;
 color:black;
 font-size:10px;
 border-radius:8px;
@@ -144,7 +144,7 @@ button{
 padding:10px 16px;
 border:none;
 border-radius:10px;
-background:#1db954;
+background:#1DB954;
 font-weight:bold;
 cursor:pointer;
 }
@@ -160,8 +160,8 @@ font-size:14px;
 
 .lyrics{
 margin-top:10px;
+color:#1DB954;
 font-size:14px;
-color:#1db954;
 }
 
 /* MOBILE */
@@ -216,7 +216,7 @@ left:70px;
 <div class="main">
 
 <div class="title">
-🐼 100 Mandarin Hits
+🐼 Spotify Panda Mandarin Hits
 </div>
 
 <input
@@ -260,43 +260,54 @@ onkeyup="render()"
 
 <script>
 
-/* 🎵 DATABASE 100 LAGU */
+/* 🎵 DATABASE */
 
-const titles=[
+const musicLink =
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
-"告白气球","稻香","青花瓷","七里香","光年之外",
-"泡沫","那些年","大鱼","修炼爱情","十年",
-"富士山下","遇见","突然好想你","年少有为","逆战",
-"天下","达拉崩吧","有何不可","清明雨上","隐形的翅膀"
+const titles = [
+
+"告白气球",
+"稻香",
+"青花瓷",
+"七里香",
+"光年之外",
+"泡沫",
+"那些年",
+"大鱼",
+"修炼爱情",
+"十年",
+"富士山下",
+"遇见",
+"突然好想你",
+"年少有为",
+"逆战",
+"天下",
+"达拉崩吧",
+"有何不可",
+"清明雨上",
+"隐形的翅膀"
 
 ];
 
-const artists=[
+const artists = [
 
 "Jay Chou",
-"G.E.M.",
 "JJ Lin",
+"G.E.M.",
+"Eason Chan",
+"Mayday",
 "Hu Xia",
 "Zhou Shen",
-"Mayday",
-"Eason Chan",
-"Li Ronghao",
 "Angela Chang",
+"Li Ronghao",
 "Xu Song"
 
 ];
 
-const urls=[
-
-"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
-
-];
-
 let songs=[];
+
+/* AUTO 100 SONGS */
 
 for(let i=0;i<100;i++){
 
@@ -308,9 +319,9 @@ artist:artists[i % artists.length],
 
 cat:"Mandarin",
 
-url:urls[i % urls.length],
+url:musicLink,
 
-lyric:"🎤 Panda Mandarin Karaoke "+(i+1)
+lyric:"🎤 Mandarin Karaoke Lyrics "+(i+1)
 
 });
 
@@ -335,7 +346,7 @@ audio.load();
 audio.play()
 .then(()=>{
 
-console.log("music playing");
+console.log("music play");
 
 })
 .catch(err=>{
@@ -354,6 +365,8 @@ s.lyric;
 
 }
 
+/* TOGGLE */
+
 function toggle(){
 
 let a=document.getElementById("audio");
@@ -361,6 +374,8 @@ let a=document.getElementById("audio");
 a.paused ? a.play() : a.pause();
 
 }
+
+/* NEXT */
 
 function next(){
 
@@ -370,6 +385,8 @@ play(index);
 
 }
 
+/* PREV */
+
 function prev(){
 
 index=(index-1+songs.length)%songs.length;
@@ -377,6 +394,8 @@ index=(index-1+songs.length)%songs.length;
 play(index);
 
 }
+
+/* SHUFFLE */
 
 function shuffle(){
 
@@ -395,7 +414,7 @@ next();
 
 });
 
-/* RENDER */
+/* SEARCH */
 
 function render(){
 

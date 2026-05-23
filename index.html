@@ -3,74 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PANDA Music Player</title>
+  <title>PANDA Music Pro</title>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      text-align: center;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1220;
+      color: white;
     }
 
     header {
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
       background: #111827;
     }
 
-    .container {
-      padding: 20px;
+    .app {
+      max-width: 900px;
+      margin: auto;
+      padding: 10px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
     }
 
     button {
-      padding: 10px 15px;
-      margin: 5px;
+      padding: 10px;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
       background: #2563eb;
       color: white;
+      cursor: pointer;
     }
 
     button:hover {
       background: #1d4ed8;
     }
 
-    #player {
-      margin-top: 20px;
+    #results {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
     }
 
-    .playlist-title {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #93c5fd;
+    .card {
+      background: #1f2937;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 100%;
+    }
+
+    .card p {
+      font-size: 12px;
+      padding: 5px;
+    }
+
+    #player {
+      margin-top: 15px;
+      width: 100%;
+      aspect-ratio: 16/9;
     }
   </style>
 </head>
 
 <body>
 
-<header>🐼 PANDA Music Player</header>
+<header>🐼 PANDA Music Pro</header>
 
-<div class="container">
+<div class="app">
 
-  <div>
-    <button onclick="loadPlaylist('english')">English Playlist</button>
-    <button onclick="loadPlaylist('mandarin')">Mandarin Playlist</button>
+  <div class="search-box">
+    <input id="query" placeholder="Cari lagu English / Mandarin..." />
+    <button onclick="search()">Search</button>
   </div>
-
-  <div class="playlist-title" id="title">Pilih Playlist</div>
 
   <div id="player"></div>
 
-  <div>
-    <button onclick="prevVideo()">⏮ Prev</button>
-    <button onclick="nextVideo()">Next ⏭</button>
-  </div>
+  <div id="results"></div>
 
 </div>
 
@@ -78,74 +104,69 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-  // Playlist video ID (ganti sesuai kebutuhan)
-  const playlists = {
-    english: [
-      "3JZ_D3ELwOQ", // contoh: English song
-      "fJ9rUzIMcZQ",
-      "ktvTqknDobU"
-    ],
-    mandarin: [
-      "2Vv-BfVoq4g", // contoh: Mandarin song (ganti sesuai)
-      "EATpWcVvX0Q",
-      "RgKAFK5djSk"
-    ]
-  };
+const API_KEY = "YOUR_YOUTUBE_API_KEY"; // 🔴 ganti ini
 
-  let player;
-  let currentList = [];
-  let currentIndex = 0;
+let player;
+let currentVideoId = null;
 
-  function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-      height: '360',
-      width: '640',
-      videoId: '',
-      playerVars: {
-        autoplay: 0,
-        controls: 1
-      },
-      events: {
-        onStateChange: onPlayerStateChange
-      }
-    });
-  }
-
-  function loadPlaylist(type) {
-    currentList = playlists[type];
-    currentIndex = 0;
-
-    document.getElementById("title").innerText =
-      type === "english" ? "🎵 English Playlist" : "🎵 Mandarin Playlist";
-
-    playVideo();
-  }
-
-  function playVideo() {
-    const videoId = currentList[currentIndex];
-    player.loadVideoById(videoId);
-  }
-
-  function nextVideo() {
-    if (currentIndex < currentList.length - 1) {
-      currentIndex++;
-      playVideo();
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("player", {
+    height: "360",
+    width: "640",
+    videoId: "",
+    playerVars: {
+      autoplay: 1,
+      controls: 1,
+      mute: 1, // 🔥 penting untuk autoplay
+      playsinline: 1
     }
-  }
+  });
+}
 
-  function prevVideo() {
-    if (currentIndex > 0) {
-      currentIndex--;
-      playVideo();
-    }
-  }
+// 🔍 SEARCH YOUTUBE REAL TIME
+async function search() {
+  const q = document.getElementById("query").value;
 
-  function onPlayerStateChange(event) {
-    // Auto next saat video selesai
-    if (event.data === YT.PlayerState.ENDED) {
-      nextVideo();
-    }
-  }
+  const url =
+    `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=12&q=${encodeURIComponent(q)}&key=${API_KEY}`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const results = document.getElementById("results");
+  results.innerHTML = "";
+
+  data.items.forEach(item => {
+    const videoId = item.id.videoId;
+    const title = item.snippet.title;
+    const thumb = item.snippet.thumbnails.medium.url;
+
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <img src="${thumb}" />
+      <p>${title}</p>
+    `;
+
+    div.onclick = () => playVideo(videoId);
+
+    results.appendChild(div);
+  });
+}
+
+// ▶ PLAY VIDEO + AUTOPLAY
+function playVideo(videoId) {
+  currentVideoId = videoId;
+
+  player.loadVideoById({
+    videoId: videoId,
+    suggestedQuality: "large"
+  });
+
+  player.mute(); // autoplay fix
+  player.playVideo();
+}
 </script>
 
 </body>

@@ -3,43 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panda MP3 Player Xuhong 🐼</title>
+<title>Panda Music 1000 🎧</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#0f0f0f;
+background:#121212;
 color:white;
 }
 
 .header{
-background:#000;
-padding:15px;
-text-align:center;
-font-weight:bold;
-color:#1db954;
-font-size:20px;
 position:fixed;
 top:0;
 left:0;
 right:0;
+background:#000;
+padding:12px;
+text-align:center;
+color:#1db954;
+font-weight:bold;
 }
 
 .container{
-margin-top:60px;
+display:flex;
+margin-top:50px;
+}
+
+.list{
+width:60%;
+height:100vh;
+overflow:auto;
 padding:10px;
-margin-bottom:140px;
 }
 
 .song{
+padding:10px;
+margin:5px;
 background:#1e1e1e;
-padding:12px;
-margin:6px 0;
-border-radius:10px;
+border-radius:8px;
 cursor:pointer;
-display:flex;
-justify-content:space-between;
 }
 
 .song:hover{
@@ -47,13 +50,24 @@ background:#333;
 }
 
 .player{
+width:40%;
 position:fixed;
-bottom:0;
-left:0;
 right:0;
+top:50px;
+bottom:0;
 background:#000;
 padding:10px;
-border-top:1px solid #333;
+}
+
+video{
+width:100%;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
 }
 
 button{
@@ -61,126 +75,111 @@ background:#1db954;
 border:none;
 padding:10px;
 margin:3px;
-border-radius:8px;
-font-weight:bold;
 cursor:pointer;
-}
-
-#now{
-margin-bottom:8px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">🐼 PANDA MP3 PLAYER – XUHONG 100 SONGS</div>
+<div class="header">🐼 PANDA MUSIC PLAYER (1000 SONGS)</div>
 
-<div class="container" id="list"></div>
+<div class="container">
+
+<div class="list" id="list"></div>
 
 <div class="player">
 
-<div id="now">Tidak ada lagu diputar</div>
+<video id="video" controls></video>
 
-<audio id="audio" controls style="width:100%"></audio>
+<input id="search" placeholder="Cari lagu..." onkeyup="render()">
 
 <div>
 <button onclick="prev()">⏮</button>
-<button onclick="toggle()">▶ / ⏸</button>
+<button onclick="toggle()">▶/⏸</button>
 <button onclick="next()">⏭</button>
 <button onclick="shuffle()">🔀</button>
+</div>
+
+<div id="now">Tidak ada lagu</div>
+
 </div>
 
 </div>
 
 <script>
 
-/* 🎵 100 SONG LIST (XUHONG + CHINESE VIBE + HITS MIX) */
-const titles = [
-"Xuhong Dream","Xuhong Night","Xuhong Love","Xuhong Sad","Xuhong Rain",
-"Xuhong Memory","Xuhong Sky","Xuhong Heart","Xuhong Winter","Xuhong Summer",
-"告白气球","稻香","青花瓷","七里香","夜曲",
-"光年之外","泡沫","倒带","那些年","大鱼",
-"修炼爱情","可惜没如果","江南","十年","富士山下",
-"好久不见","浮夸","K歌之王","遇见","天黑黑",
-"小幸运","平凡之路","体面","说散就散","后来",
-"晴天","简单爱","龙卷风","安静","一路向北",
-"说好不哭","等你下课","彩虹","最长的电影","枫",
-"借口","世界末日","东风破","逆战","天下",
-"达拉崩吧","有何不可","清明雨上","断桥残雪","玫瑰花的葬礼",
-"演员","年少有为","模特","李白","成全",
-"追光者","岁月神偷","突然好想你","倔强","温柔",
-"红豆","传奇","我愿意","容易受伤的女人","棋子",
-"爱情转移","最佳损友","明年今日","浮夸2","十年2",
-"泡沫2","光年之外2","大鱼2","告白气球2","稻香2",
-"晴天2","后来2","体面2","说散就散2","小幸运2",
-"平凡之路2","演员2","年少有为2","江南2","富士山下2"
+/* 🎵 TEMPLATE 1000 SONGS */
+let baseSongs = [
+"Jay Chou - Qing Hua Ci",
+"Jay Chou - Dao Xiang",
+"Ed Sheeran - Perfect",
+"Ed Sheeran - Shape of You",
+"Charlie Puth - Attention",
+"Billie Eilish - Bad Guy",
+"JJ Lin - Jiang Nan",
+"G.E.M - Light Years Away"
 ];
-
-/* 🎵 demo MP3 */
-const url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
 let songs = [];
 
-for(let i=0;i<100;i++){
+/* generate 1000 */
+for(let i=0;i<1000;i++){
 songs.push({
-title: titles[i],
-url: url
+title: baseSongs[i % baseSongs.length] + " #" + (i+1),
+url: "https://www.w3schools.com/html/mov_bbb.mp4" // demo video
 });
 }
 
-let index = 0;
+let index=0;
 
-/* PLAY */
 function play(i){
-index = i;
-let s = songs[i];
-
-let audio = document.getElementById("audio");
-audio.src = s.url;
-audio.load();
-audio.play();
+index=i;
+let v=document.getElementById("video");
+v.src=songs[i].url;
+v.play();
 
 document.getElementById("now").innerText =
-"🎧 Now Playing: " + s.title;
+"🎧 Now Playing: "+songs[i].title;
 }
 
-/* NEXT */
 function next(){
-index = (index + 1) % songs.length;
+index=(index+1)%songs.length;
 play(index);
 }
 
-/* PREV */
 function prev(){
-index = (index - 1 + songs.length) % songs.length;
+index=(index-1+songs.length)%songs.length;
 play(index);
 }
 
-/* SHUFFLE */
 function shuffle(){
 play(Math.floor(Math.random()*songs.length));
 }
 
-/* TOGGLE */
 function toggle(){
-let a = document.getElementById("audio");
-a.paused ? a.play() : a.pause();
+let v=document.getElementById("video");
+v.paused?v.play():v.pause();
 }
 
-/* AUTO NEXT */
-document.getElementById("audio").addEventListener("ended", next);
+function render(){
+let list=document.getElementById("list");
+let search=document.getElementById("search").value.toLowerCase();
 
-/* RENDER LIST */
-let list = document.getElementById("list");
+list.innerHTML="";
 
 songs.forEach((s,i)=>{
-let div = document.createElement("div");
-div.className = "song";
-div.innerHTML = "🎵 " + s.title;
-div.onclick = ()=>play(i);
+if(s.title.toLowerCase().includes(search)){
+let div=document.createElement("div");
+div.className="song";
+div.innerHTML="🎵 "+s.title;
+div.onclick=()=>play(i);
 list.appendChild(div);
+}
 });
+}
+
+render();
 
 </script>
 

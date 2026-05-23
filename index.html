@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spotify Panda 🐼</title>
+<title>Spotify Panda 🐼 Mandarin Hits</title>
 
 <style>
 
@@ -20,47 +20,21 @@ color:white;
 overflow:hidden;
 }
 
-/* BACKGROUND */
-
-.bg{
-position:fixed;
-width:100%;
-height:100%;
-z-index:-1;
-overflow:hidden;
-}
-
-.circle{
-position:absolute;
-border-radius:50%;
-background:#1db95433;
-animation:float 12s linear infinite;
-}
-
-@keyframes float{
-from{
-transform:translateY(100vh) scale(0);
-}
-to{
-transform:translateY(-100vh) scale(1.5);
-}
-}
-
 /* SIDEBAR */
 
 .sidebar{
 position:fixed;
 left:0;
 top:0;
-width:240px;
+width:230px;
 height:100%;
-background:black;
+background:#000;
 padding:20px;
 border-right:1px solid #222;
 }
 
 .logo{
-font-size:24px;
+font-size:25px;
 font-weight:bold;
 margin-bottom:30px;
 }
@@ -70,7 +44,7 @@ color:#1db954;
 }
 
 .menu{
-padding:14px;
+padding:12px;
 margin:8px 0;
 border-radius:10px;
 cursor:pointer;
@@ -86,7 +60,7 @@ color:white;
 /* MAIN */
 
 .main{
-margin-left:240px;
+margin-left:230px;
 padding:20px;
 height:calc(100vh - 120px);
 overflow:auto;
@@ -101,21 +75,21 @@ color:#1db954;
 .search{
 width:100%;
 padding:14px;
-background:#1a1a1a;
 border:none;
 border-radius:12px;
+background:#1e1e1e;
 color:white;
 margin-bottom:20px;
 }
 
-/* SONG CARD */
+/* SONG */
 
 .song{
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:#181818;
 padding:15px;
+background:#181818;
 margin:10px 0;
 border-radius:12px;
 transition:0.3s;
@@ -135,16 +109,17 @@ font-weight:bold;
 .song-artist{
 font-size:13px;
 color:#aaa;
+margin-top:4px;
 }
 
 .badge{
+display:inline-block;
+margin-top:5px;
+padding:4px 8px;
 background:#1db954;
 color:black;
-padding:4px 8px;
 font-size:10px;
 border-radius:8px;
-margin-top:5px;
-display:inline-block;
 }
 
 /* PLAYER */
@@ -152,16 +127,11 @@ display:inline-block;
 .player{
 position:fixed;
 bottom:0;
-left:240px;
+left:230px;
 right:0;
 background:#181818;
 padding:12px;
 border-top:1px solid #333;
-}
-
-.now{
-font-size:14px;
-margin-bottom:10px;
 }
 
 .controls{
@@ -183,12 +153,15 @@ button:hover{
 opacity:0.8;
 }
 
-/* LYRICS */
+.now{
+margin-bottom:10px;
+font-size:14px;
+}
 
 .lyrics{
 margin-top:10px;
-color:#1db954;
 font-size:14px;
+color:#1db954;
 }
 
 /* MOBILE */
@@ -220,12 +193,11 @@ left:70px;
 
 </style>
 </head>
+
 <body>
 
-<!-- BG -->
-<div class="bg" id="bg"></div>
-
 <!-- SIDEBAR -->
+
 <div class="sidebar">
 
 <div class="logo">
@@ -240,10 +212,11 @@ left:70px;
 </div>
 
 <!-- MAIN -->
+
 <div class="main">
 
 <div class="title">
-🐼 Spotify Panda Mandarin Hits
+🐼 100 Mandarin Hits
 </div>
 
 <input
@@ -258,6 +231,7 @@ onkeyup="render()"
 </div>
 
 <!-- PLAYER -->
+
 <div class="player">
 
 <div class="now" id="now">
@@ -279,38 +253,40 @@ onkeyup="render()"
 </div>
 
 <div class="lyrics" id="lyrics">
-🎤 Lirik karaoke akan tampil di sini...
+🎤 Lirik karaoke muncul di sini...
 </div>
 
 </div>
 
 <script>
 
-/* BACKGROUND */
+/* 🎵 DATABASE 100 LAGU */
 
-for(let i=0;i<25;i++){
+const titles=[
 
-let c=document.createElement("div");
+"告白气球","稻香","青花瓷","七里香","光年之外",
+"泡沫","那些年","大鱼","修炼爱情","十年",
+"富士山下","遇见","突然好想你","年少有为","逆战",
+"天下","达拉崩吧","有何不可","清明雨上","隐形的翅膀"
 
-c.className="circle";
+];
 
-c.style.width=Math.random()*150+"px";
-c.style.height=c.style.width;
+const artists=[
 
-c.style.left=Math.random()*100+"vw";
+"Jay Chou",
+"G.E.M.",
+"JJ Lin",
+"Hu Xia",
+"Zhou Shen",
+"Mayday",
+"Eason Chan",
+"Li Ronghao",
+"Angela Chang",
+"Xu Song"
 
-c.style.animationDuration=
-(5+Math.random()*10)+"s";
+];
 
-document.getElementById("bg").appendChild(c);
-
-}
-
-/* DATABASE 100 SONG */
-
-let songs=[];
-
-const demoUrls=[
+const urls=[
 
 "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
 "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
@@ -320,44 +296,21 @@ const demoUrls=[
 
 ];
 
-const mandarinHits=[
-
-"告白气球",
-"稻香",
-"青花瓷",
-"七里香",
-"光年之外",
-"泡沫",
-"那些年",
-"大鱼",
-"修炼爱情",
-"十年",
-"富士山下",
-"遇见",
-"突然好想你",
-"年少有为",
-"逆战",
-"天下",
-"达拉崩吧",
-"有何不可",
-"清明雨上",
-"隐形的翅膀"
-
-];
+let songs=[];
 
 for(let i=0;i<100;i++){
 
 songs.push({
 
-title:mandarinHits[i % mandarinHits.length]+" "+(i+1),
+title:titles[i % titles.length]+" "+(i+1),
 
-artist:"Mandarin Artist "+(i+1),
+artist:artists[i % artists.length],
 
 cat:"Mandarin",
 
-url:demoUrls[i % demoUrls.length],
+url:urls[i % urls.length],
 
-lyric:"🎤 Panda Karaoke Lyric "+(i+1)
+lyric:"🎤 Panda Mandarin Karaoke "+(i+1)
 
 });
 
@@ -366,8 +319,6 @@ lyric:"🎤 Panda Karaoke Lyric "+(i+1)
 /* PLAYER */
 
 let index=0;
-
-/* PLAY */
 
 function play(i){
 
@@ -384,7 +335,7 @@ audio.load();
 audio.play()
 .then(()=>{
 
-console.log("music play");
+console.log("music playing");
 
 })
 .catch(err=>{
@@ -403,8 +354,6 @@ s.lyric;
 
 }
 
-/* TOGGLE */
-
 function toggle(){
 
 let a=document.getElementById("audio");
@@ -412,8 +361,6 @@ let a=document.getElementById("audio");
 a.paused ? a.play() : a.pause();
 
 }
-
-/* NEXT */
 
 function next(){
 
@@ -423,8 +370,6 @@ play(index);
 
 }
 
-/* PREV */
-
 function prev(){
 
 index=(index-1+songs.length)%songs.length;
@@ -432,8 +377,6 @@ index=(index-1+songs.length)%songs.length;
 play(index);
 
 }
-
-/* SHUFFLE */
 
 function shuffle(){
 
@@ -452,7 +395,7 @@ next();
 
 });
 
-/* SEARCH */
+/* RENDER */
 
 function render(){
 

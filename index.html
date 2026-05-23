@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panda Xuhong Music 🐼</title>
-
-<script src="https://www.youtube.com/iframe_api"></script>
+<title>Panda Music Player 🐼</title>
 
 <style>
-
 body{
 margin:0;
 font-family:Arial;
@@ -16,29 +13,30 @@ background:#121212;
 color:white;
 }
 
-.topbar{
+.header{
+background:#000;
+padding:15px;
+font-size:20px;
+font-weight:bold;
+color:#1db954;
+text-align:center;
 position:fixed;
 top:0;
 left:0;
 right:0;
-background:#000;
-padding:15px;
-color:#1db954;
-font-weight:bold;
-text-align:center;
 }
 
 .container{
 margin-top:60px;
+padding:15px;
 margin-bottom:120px;
-padding:10px;
 }
 
 .song{
-background:#1e1e1e;
 padding:12px;
 margin:8px 0;
-border-radius:12px;
+background:#1e1e1e;
+border-radius:10px;
 cursor:pointer;
 display:flex;
 justify-content:space-between;
@@ -58,20 +56,18 @@ padding:10px;
 border-top:1px solid #333;
 }
 
-#player{
-width:100%;
-height:200px;
-border-radius:10px;
-}
-
 button{
 background:#1db954;
 border:none;
 padding:10px;
-margin:5px;
+margin:3px;
 font-weight:bold;
 cursor:pointer;
 border-radius:8px;
+}
+
+#now{
+margin-bottom:8px;
 }
 
 </style>
@@ -79,18 +75,19 @@ border-radius:8px;
 
 <body>
 
-<div class="topbar">
-🐼 PANDA MUSIC – XUHONG + MANDARIN HITS
-</div>
+<div class="header">🐼 PANDA MUSIC PLAYER</div>
 
 <div class="container" id="list"></div>
 
 <div class="player">
 
-<div id="player"></div>
+<div id="now">Tidak ada lagu diputar</div>
 
-<div style="text-align:center;">
+<audio id="audio" controls style="width:100%"></audio>
+
+<div>
 <button onclick="prev()">⏮</button>
+<button onclick="toggle()">▶ / ⏸</button>
 <button onclick="next()">⏭</button>
 <button onclick="shuffle()">🔀</button>
 </div>
@@ -99,98 +96,94 @@ border-radius:8px;
 
 <script>
 
-/* 🎵 YouTube playlist (real videos mix) */
-let playlist = [
-
-"dQw4w9WgXcQ","kJQP7kiw5Fk","JGwWNGJdvx8","OPf0YbXqDm0","RgKAFK5djSk",
-"eYq7WapuDLU","3JZ_D3ELwOQ","YQHsXMglC9A","hT_nvWreIhg","fRh_vgS2dFE",
-
-// 🐼 XUHONG / XU HONG STYLE (placeholder themed IDs mix)
-"60ItHLz5WEA","lWA2pjMjpBs","M7lc1UVf-VE","tAGnKpE4NCI","2Vv-BfVoq4g",
-
-// Mandarin hits
-"kXYiU_JCYtU","lY2yjAdbvdQ","uelHwf8o7_U","CevxZvSJLk8","09R8_2nJtjg"
-
+/* 🎵 100 LAGU (MIX MANDARIN + HITS + POP) */
+const titles = [
+"告白气球","稻香","青花瓷","七里香","夜曲",
+"光年之外","泡沫","倒带","那些年","大鱼",
+"修炼爱情","可惜没如果","江南","十年","富士山下",
+"好久不见","浮夸","K歌之王","遇见","天黑黑",
+"小幸运","平凡之路","体面","说散就散","后来",
+"晴天","简单爱","龙卷风","安静","一路向北",
+"说好不哭","等你下课","彩虹","最长的电影","枫",
+"借口","世界末日","东风破","七里香2","稻香2",
+"演员","年少有为","模特","李白","成全",
+"逆战","天下","达拉崩吧","有何不可","清明雨上",
+"断桥残雪","玫瑰花的葬礼","城府","星空","知足",
+"温柔","突然好想你","倔强","志明与春娇","离开地球表面",
+"追光者","岁月神偷","我好想你","你不是真正的快乐","突然之间",
+"红豆","传奇","我愿意","容易受伤的女人","棋子",
+"爱情转移","最佳损友","明年今日","浮夸2","十年2",
+"泡沫2","光年之外2","大鱼2","告白气球2","稻香3",
+"小幸运2","平凡之路2","晴天2","后来2","体面2",
+"说散就散2","演员2","年少有为2","江南2","富士山下2"
 ];
 
-/* extend to 100 songs */
-for(let i=playlist.length;i<100;i++){
-playlist.push(playlist[i % 20]);
-}
+/* 🎵 1 AUDIO LINK (DEMO STREAM) */
+const musicURL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
-let index=0;
-let player;
+let songs = [];
 
-/* INIT */
-function onYouTubeIframeAPIReady(){
-
-player = new YT.Player("player",{
-
-height:"200",
-width:"100%",
-videoId:playlist[index],
-
-playerVars:{
-autoplay:0,
-controls:1
-},
-
-events:{
-"onStateChange":onState
-}
-
+/* generate 100 songs */
+for(let i=0;i<100;i++){
+songs.push({
+title: titles[i],
+url: musicURL
 });
-
 }
 
-/* AUTO NEXT */
-function onState(e){
-if(e.data === YT.PlayerState.ENDED){
-next();
-}
-}
+let index = 0;
 
 /* PLAY */
 function play(i){
-index=i;
-player.loadVideoById(playlist[index]);
+index = i;
+
+let s = songs[i];
+let audio = document.getElementById("audio");
+
+audio.src = s.url;
+audio.load();
+audio.play();
+
+document.getElementById("now").innerText =
+"🎧 Now Playing: " + s.title;
 }
 
 /* NEXT */
 function next(){
-index=(index+1)%playlist.length;
+index = (index + 1) % songs.length;
 play(index);
 }
 
 /* PREV */
 function prev(){
-index=(index-1+playlist.length)%playlist.length;
+index = (index - 1 + songs.length) % songs.length;
 play(index);
 }
 
 /* SHUFFLE */
 function shuffle(){
-play(Math.floor(Math.random()*playlist.length));
+play(Math.floor(Math.random() * songs.length));
 }
 
-/* UI LIST 100 SONG */
-let list=document.getElementById("list");
+/* TOGGLE */
+function toggle(){
+let a = document.getElementById("audio");
+a.paused ? a.play() : a.pause();
+}
 
-for(let i=0;i<100;i++){
+/* AUTO NEXT */
+document.getElementById("audio").addEventListener("ended", next);
 
-let name =
-(i < 20)
-? "🎤 Xuhong / Xu Hong Track " + (i+1)
-: "🎵 Mandarin Hit " + (i+1);
+/* RENDER LIST */
+let list = document.getElementById("list");
 
-let div=document.createElement("div");
-div.className="song";
-div.innerHTML = `<div>${name}</div><div>▶</div>`;
-div.onclick=()=>play(i);
-
+songs.forEach((s,i)=>{
+let div = document.createElement("div");
+div.className = "song";
+div.innerHTML = "🎵 " + s.title;
+div.onclick = ()=>play(i);
 list.appendChild(div);
-
-}
+});
 
 </script>
 

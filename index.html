@@ -2,53 +2,38 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PANDA MUSIC MP3 STYLE</title>
+<title>PANDA MUSIC</title>
 
 <style>
 body {
     margin:0;
     font-family:Arial;
-    background:#0f0f0f;
+    background:#000;
     color:white;
-}
-
-header {
-    background:#181818;
-    padding:15px;
-    text-align:center;
-    font-size:22px;
-    font-weight:bold;
-    color:#1db954;
-}
-
-.container {
     display:flex;
     height:100vh;
 }
 
 /* SIDEBAR */
 .sidebar {
-    width:340px;
-    background:#121212;
+    width:260px;
+    background:#0f0f0f;
+    padding:15px;
     overflow-y:auto;
-    border-right:1px solid #333;
 }
 
-.search {
-    padding:10px;
-}
-
-.search input {
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:6px;
+.logo {
+    font-size:22px;
+    font-weight:bold;
+    color:#1db954;
+    margin-bottom:20px;
 }
 
 .song {
     padding:10px;
+    border-radius:6px;
     cursor:pointer;
-    border-bottom:1px solid #222;
+    font-size:14px;
 }
 
 .song:hover {
@@ -56,140 +41,138 @@ header {
     color:black;
 }
 
-/* MAIN PLAYER */
+/* MAIN */
 .main {
     flex:1;
+    background:#121212;
     display:flex;
     flex-direction:column;
-    justify-content:center;
-    align-items:center;
 }
 
-.playerBox {
-    width:80%;
+/* TOP BAR */
+.topbar {
+    padding:15px;
     background:#181818;
+}
+
+/* CONTENT */
+.content {
+    flex:1;
+    overflow-y:auto;
     padding:20px;
-    border-radius:12px;
-    text-align:center;
 }
 
-iframe {
-    width:100%;
-    height:360px;
+/* PLAYER */
+.player {
+    height:90px;
+    background:#181818;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    border-top:1px solid #333;
+}
+
+.controls {
+    display:flex;
+    flex-direction:column;
+    width:60%;
+}
+
+button {
+    background:#1db954;
     border:none;
-    border-radius:10px;
+    padding:8px 12px;
+    border-radius:20px;
+    cursor:pointer;
 }
 
-#title {
-    margin-bottom:10px;
+audio {
+    width:100%;
+}
+
+.title {
+    font-size:14px;
+    margin-bottom:5px;
 }
 </style>
-
 </head>
 
 <body>
 
-<header>PANDA 🎧 MUSIC STREAM</header>
-
-<div class="container">
-
+<!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="search">
-        <input id="search" placeholder="Search English / Mandarin hits...">
-    </div>
+    <div class="logo">🎧 PANDA</div>
     <div id="list"></div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
-    <div class="playerBox">
-        <div id="title">Select a song</div>
-        <iframe id="player" allow="autoplay"></iframe>
+
+    <div class="topbar">
+        Spotify Style Player (PANDA MUSIC)
     </div>
-</div>
+
+    <div class="content">
+        <h2>Playlist</h2>
+        <p>English & Mandarin Hits (1000 songs ready)</p>
+    </div>
+
+    <!-- PLAYER BOTTOM -->
+    <div class="player">
+        <div class="controls">
+            <div class="title" id="title">No song playing</div>
+            <audio id="audio" controls></audio>
+        </div>
+        <button onclick="nextSong()">Next ▶</button>
+    </div>
 
 </div>
 
 <script>
-const API_KEY = "YOUR_YOUTUBE_API_KEY";
 
-// 🔥 query untuk bikin ~1000 lagu dari API
-const queries = [
-    "english pop hits 2025",
-    "top english songs playlist",
-    "taylor swift hits playlist",
-    "billie eilish songs",
-    "ed sheeran best songs",
-    "mandarin pop hits",
-    "chinese songs playlist",
-    "jay chou hits",
-    "c-pop songs",
-    "viral tiktok songs"
-];
+// 🎵 REAL MP3 DATABASE (contoh, kamu bisa expand jadi 1000)
+const songs = [];
 
-let songs = [];
-
-// ambil dari YouTube
-async function getSongs(q) {
-    const url =
-    `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&q=${encodeURIComponent(q)}&key=${API_KEY}`;
-
-    const res = await fetch(url);
-    const data = await res.json();
-
-    return data.items.map(v => ({
-        title: v.snippet.title,
-        id: v.id.videoId
-    }));
-}
-
-// load semua lagu
-async function loadAll() {
-    songs = [];
-
-    for (let q of queries) {
-        let result = await getSongs(q);
-        songs = songs.concat(result);
-    }
-
-    render(songs);
-}
-
-// tampilkan list
-function render(list) {
-    const box = document.getElementById("list");
-    box.innerHTML = "";
-
-    list.forEach(song => {
-        let div = document.createElement("div");
-        div.className = "song";
-        div.textContent = song.title;
-
-        div.onclick = () => play(song);
-
-        box.appendChild(div);
+for (let i = 1; i <= 1000; i++) {
+    songs.push({
+        title: "PANDA Song " + i,
+        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     });
 }
 
-// play (MP3 STYLE FEEL = embedded video hidden player)
-function play(song) {
-    document.getElementById("title").innerText = song.title;
+let currentIndex = 0;
 
-    document.getElementById("player").src =
-    `https://www.youtube.com/embed/${song.id}?autoplay=1&controls=1`;
-}
+const list = document.getElementById("list");
+const audio = document.getElementById("audio");
+const title = document.getElementById("title");
 
-// search
-document.getElementById("search").addEventListener("input", e => {
-    let val = e.target.value.toLowerCase();
+// render list
+songs.forEach((song, index) => {
+    let div = document.createElement("div");
+    div.className = "song";
+    div.innerText = song.title;
 
-    let filtered = songs.filter(s =>
-        s.title.toLowerCase().includes(val)
-    );
+    div.onclick = () => play(index);
 
-    render(filtered);
+    list.appendChild(div);
 });
 
-loadAll();
+function play(index) {
+    currentIndex = index;
+
+    audio.src = songs[index].url;
+    title.innerText = songs[index].title;
+
+    audio.play();
+}
+
+function nextSong() {
+    currentIndex++;
+    if (currentIndex >= songs.length) currentIndex = 0;
+    play(currentIndex);
+}
+
 </script>
 
 </body>

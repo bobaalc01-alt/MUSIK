@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panda Music Player 🐼</title>
+<title>Panda Music Pro Max 🐼</title>
+
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <style>
+
 body{
 margin:0;
 font-family:Arial;
@@ -13,39 +16,42 @@ background:#121212;
 color:white;
 }
 
+/* HEADER MOBILE STYLE */
 .header{
-background:#000;
-padding:15px;
-font-size:20px;
-font-weight:bold;
-color:#1db954;
-text-align:center;
 position:fixed;
 top:0;
 left:0;
 right:0;
+background:#000;
+padding:14px;
+text-align:center;
+font-weight:bold;
+color:#1db954;
+z-index:10;
 }
 
+/* LIST */
 .container{
 margin-top:60px;
-padding:15px;
-margin-bottom:120px;
+margin-bottom:220px;
+padding:10px;
 }
 
 .song{
+background:#1e1e1e;
 padding:12px;
 margin:8px 0;
-background:#1e1e1e;
-border-radius:10px;
-cursor:pointer;
+border-radius:12px;
 display:flex;
 justify-content:space-between;
+cursor:pointer;
 }
 
 .song:hover{
 background:#333;
 }
 
+/* PLAYER */
 .player{
 position:fixed;
 bottom:0;
@@ -56,18 +62,27 @@ padding:10px;
 border-top:1px solid #333;
 }
 
+#player{
+width:100%;
+height:200px;
+border-radius:10px;
+overflow:hidden;
+}
+
+.controls{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-top:8px;
+}
+
 button{
 background:#1db954;
 border:none;
-padding:10px;
-margin:3px;
+padding:10px 14px;
+border-radius:10px;
 font-weight:bold;
 cursor:pointer;
-border-radius:8px;
-}
-
-#now{
-margin-bottom:8px;
 }
 
 </style>
@@ -75,19 +90,16 @@ margin-bottom:8px;
 
 <body>
 
-<div class="header">🐼 PANDA MUSIC PLAYER</div>
+<div class="header">🐼 PANDA MUSIC PRO MAX</div>
 
 <div class="container" id="list"></div>
 
 <div class="player">
 
-<div id="now">Tidak ada lagu diputar</div>
+<div id="player"></div>
 
-<audio id="audio" controls style="width:100%"></audio>
-
-<div>
+<div class="controls">
 <button onclick="prev()">⏮</button>
-<button onclick="toggle()">▶ / ⏸</button>
 <button onclick="next()">⏭</button>
 <button onclick="shuffle()">🔀</button>
 </div>
@@ -96,94 +108,96 @@ margin-bottom:8px;
 
 <script>
 
-/* 🎵 100 LAGU (MIX MANDARIN + HITS + POP) */
-const titles = [
-"告白气球","稻香","青花瓷","七里香","夜曲",
-"光年之外","泡沫","倒带","那些年","大鱼",
-"修炼爱情","可惜没如果","江南","十年","富士山下",
-"好久不见","浮夸","K歌之王","遇见","天黑黑",
-"小幸运","平凡之路","体面","说散就散","后来",
-"晴天","简单爱","龙卷风","安静","一路向北",
-"说好不哭","等你下课","彩虹","最长的电影","枫",
-"借口","世界末日","东风破","七里香2","稻香2",
-"演员","年少有为","模特","李白","成全",
-"逆战","天下","达拉崩吧","有何不可","清明雨上",
-"断桥残雪","玫瑰花的葬礼","城府","星空","知足",
-"温柔","突然好想你","倔强","志明与春娇","离开地球表面",
-"追光者","岁月神偷","我好想你","你不是真正的快乐","突然之间",
-"红豆","传奇","我愿意","容易受伤的女人","棋子",
-"爱情转移","最佳损友","明年今日","浮夸2","十年2",
-"泡沫2","光年之外2","大鱼2","告白气球2","稻香3",
-"小幸运2","平凡之路2","晴天2","后来2","体面2",
-"说散就散2","演员2","年少有为2","江南2","富士山下2"
+/* 🎵 REAL YOUTUBE VIDEO IDS (MIX MANDARIN + HITS) */
+let playlist = [
+"dQw4w9WgXcQ","kJQP7kiw5Fk","JGwWNGJdvx8","OPf0YbXqDm0","RgKAFK5djSk",
+"eYq7WapuDLU","3JZ_D3ELwOQ","YQHsXMglC9A","hT_nvWreIhg","fRh_vgS2dFE",
+
+"60ItHLz5WEA","lWA2pjMjpBs","M7lc1UVf-VE","tAGnKpE4NCI","2Vv-BfVoq4g",
+
+"kXYiU_JCYtU","lY2yjAdbvdQ","uelHwf8o7_U","CevxZvSJLk8","09R8_2nJtjg"
 ];
 
-/* 🎵 1 AUDIO LINK (DEMO STREAM) */
-const musicURL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-
-let songs = [];
-
-/* generate 100 songs */
-for(let i=0;i<100;i++){
-songs.push({
-title: titles[i],
-url: musicURL
-});
+/* extend jadi 100 */
+for(let i=playlist.length;i<100;i++){
+playlist.push(playlist[i % 20]);
 }
 
-let index = 0;
+let index=0;
+let player;
+
+/* INIT YOUTUBE PLAYER */
+function onYouTubeIframeAPIReady(){
+
+player = new YT.Player("player",{
+
+height:"200",
+width:"100%",
+videoId:playlist[index],
+
+playerVars:{
+autoplay:0,
+controls:1,
+rel:0,
+modestbranding:1
+},
+
+events:{
+"onStateChange":onState
+}
+
+});
+
+}
+
+/* AUTO NEXT */
+function onState(e){
+if(e.data === YT.PlayerState.ENDED){
+next();
+}
+}
 
 /* PLAY */
 function play(i){
-index = i;
-
-let s = songs[i];
-let audio = document.getElementById("audio");
-
-audio.src = s.url;
-audio.load();
-audio.play();
-
-document.getElementById("now").innerText =
-"🎧 Now Playing: " + s.title;
+index=i;
+player.loadVideoById(playlist[index]);
 }
 
 /* NEXT */
 function next(){
-index = (index + 1) % songs.length;
+index=(index+1)%playlist.length;
 play(index);
 }
 
 /* PREV */
 function prev(){
-index = (index - 1 + songs.length) % songs.length;
+index=(index-1+playlist.length)%playlist.length;
 play(index);
 }
 
 /* SHUFFLE */
 function shuffle(){
-play(Math.floor(Math.random() * songs.length));
+play(Math.floor(Math.random()*playlist.length));
 }
 
-/* TOGGLE */
-function toggle(){
-let a = document.getElementById("audio");
-a.paused ? a.play() : a.pause();
-}
+/* UI LIST 100 SONG */
+let list=document.getElementById("list");
 
-/* AUTO NEXT */
-document.getElementById("audio").addEventListener("ended", next);
+for(let i=0;i<100;i++){
 
-/* RENDER LIST */
-let list = document.getElementById("list");
+let div=document.createElement("div");
+div.className="song";
 
-songs.forEach((s,i)=>{
-let div = document.createElement("div");
-div.className = "song";
-div.innerHTML = "🎵 " + s.title;
-div.onclick = ()=>play(i);
+div.innerHTML=`
+<div>🎵 Panda Track ${i+1}</div>
+<div>▶</div>
+`;
+
+div.onclick=()=>play(i);
+
 list.appendChild(div);
-});
+
+}
 
 </script>
 

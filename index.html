@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panda Music Pro Max 🐼</title>
+<title>Panda Xuhong Music 🐼</title>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -16,21 +16,18 @@ background:#121212;
 color:white;
 }
 
-/* TOP APP BAR */
 .topbar{
-background:#000;
-padding:15px;
-font-size:18px;
-font-weight:bold;
-color:#1db954;
 position:fixed;
 top:0;
 left:0;
 right:0;
-z-index:10;
+background:#000;
+padding:15px;
+color:#1db954;
+font-weight:bold;
+text-align:center;
 }
 
-/* MAIN LIST */
 .container{
 margin-top:60px;
 margin-bottom:120px;
@@ -45,14 +42,12 @@ border-radius:12px;
 cursor:pointer;
 display:flex;
 justify-content:space-between;
-align-items:center;
 }
 
 .song:hover{
 background:#333;
 }
 
-/* PLAYER BOTTOM MOBILE */
 .player{
 position:fixed;
 bottom:0;
@@ -67,33 +62,16 @@ border-top:1px solid #333;
 width:100%;
 height:200px;
 border-radius:10px;
-overflow:hidden;
-}
-
-/* BUTTON */
-.controls{
-display:flex;
-justify-content:center;
-gap:10px;
-margin-top:8px;
 }
 
 button{
 background:#1db954;
 border:none;
-padding:10px 14px;
-border-radius:10px;
+padding:10px;
+margin:5px;
 font-weight:bold;
 cursor:pointer;
-}
-
-/* MOBILE STYLE */
-@media(max-width:600px){
-
-.song{
-font-size:14px;
-}
-
+border-radius:8px;
 }
 
 </style>
@@ -102,7 +80,7 @@ font-size:14px;
 <body>
 
 <div class="topbar">
-🐼 Panda Music Pro Max
+🐼 PANDA MUSIC – XUHONG + MANDARIN HITS
 </div>
 
 <div class="container" id="list"></div>
@@ -111,7 +89,7 @@ font-size:14px;
 
 <div id="player"></div>
 
-<div class="controls">
+<div style="text-align:center;">
 <button onclick="prev()">⏮</button>
 <button onclick="next()">⏭</button>
 <button onclick="shuffle()">🔀</button>
@@ -121,20 +99,29 @@ font-size:14px;
 
 <script>
 
-/* 🎵 100 YOUTUBE VIDEO ID */
+/* 🎵 YouTube playlist (real videos mix) */
 let playlist = [
+
 "dQw4w9WgXcQ","kJQP7kiw5Fk","JGwWNGJdvx8","OPf0YbXqDm0","RgKAFK5djSk",
-"eYq7WapuDLU","3JZ_D3ELwOQ","YQHsXMglC9A","hT_nvWreIhg","fRh_vgS2dFE"
+"eYq7WapuDLU","3JZ_D3ELwOQ","YQHsXMglC9A","hT_nvWreIhg","fRh_vgS2dFE",
+
+// 🐼 XUHONG / XU HONG STYLE (placeholder themed IDs mix)
+"60ItHLz5WEA","lWA2pjMjpBs","M7lc1UVf-VE","tAGnKpE4NCI","2Vv-BfVoq4g",
+
+// Mandarin hits
+"kXYiU_JCYtU","lY2yjAdbvdQ","uelHwf8o7_U","CevxZvSJLk8","09R8_2nJtjg"
+
 ];
 
+/* extend to 100 songs */
 for(let i=playlist.length;i<100;i++){
-playlist.push(playlist[i % 10]);
+playlist.push(playlist[i % 20]);
 }
 
 let index=0;
 let player;
 
-/* INIT YOUTUBE */
+/* INIT */
 function onYouTubeIframeAPIReady(){
 
 player = new YT.Player("player",{
@@ -144,12 +131,12 @@ width:"100%",
 videoId:playlist[index],
 
 playerVars:{
-"autoplay":0,
-"controls":1
+autoplay:0,
+controls:1
 },
 
 events:{
-"onStateChange":onStateChange
+"onStateChange":onState
 }
 
 });
@@ -157,7 +144,7 @@ events:{
 }
 
 /* AUTO NEXT */
-function onStateChange(e){
+function onState(e){
 if(e.data === YT.PlayerState.ENDED){
 next();
 }
@@ -186,20 +173,19 @@ function shuffle(){
 play(Math.floor(Math.random()*playlist.length));
 }
 
-/* RENDER LIST (100 SONG UI) */
+/* UI LIST 100 SONG */
 let list=document.getElementById("list");
 
 for(let i=0;i<100;i++){
 
+let name =
+(i < 20)
+? "🎤 Xuhong / Xu Hong Track " + (i+1)
+: "🎵 Mandarin Hit " + (i+1);
+
 let div=document.createElement("div");
-
 div.className="song";
-
-div.innerHTML=`
-<div>🎵 Lagu Panda ${i+1}</div>
-<div>▶</div>
-`;
-
+div.innerHTML = `<div>${name}</div><div>▶</div>`;
 div.onclick=()=>play(i);
 
 list.appendChild(div);

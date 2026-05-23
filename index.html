@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PANDA MUSIC</title>
+<title>PANDA MUSIC MP3 STYLE</title>
 
 <style>
 body {
     margin:0;
-    font-family:Arial, sans-serif;
+    font-family:Arial;
     background:#0f0f0f;
     color:white;
 }
@@ -28,17 +28,17 @@ header {
 
 /* SIDEBAR */
 .sidebar {
-    width:320px;
+    width:340px;
     background:#121212;
-    border-right:1px solid #333;
     overflow-y:auto;
+    border-right:1px solid #333;
 }
 
-.searchBox {
+.search {
     padding:10px;
 }
 
-.searchBox input {
+.search input {
     width:100%;
     padding:10px;
     border:none;
@@ -47,8 +47,8 @@ header {
 
 .song {
     padding:10px;
-    border-bottom:1px solid #222;
     cursor:pointer;
+    border-bottom:1px solid #222;
 }
 
 .song:hover {
@@ -56,7 +56,7 @@ header {
     color:black;
 }
 
-/* MAIN */
+/* MAIN PLAYER */
 .main {
     flex:1;
     display:flex;
@@ -65,15 +65,23 @@ header {
     align-items:center;
 }
 
-#player {
+.playerBox {
     width:80%;
-    height:420px;
-    border:none;
+    background:#181818;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
 }
 
-.title {
+iframe {
+    width:100%;
+    height:360px;
+    border:none;
+    border-radius:10px;
+}
+
+#title {
     margin-bottom:10px;
-    color:#fff;
 }
 </style>
 
@@ -81,45 +89,47 @@ header {
 
 <body>
 
-<header>PANDA MUSIC 🎧</header>
+<header>PANDA 🎧 MUSIC STREAM</header>
 
 <div class="container">
 
 <div class="sidebar">
-    <div class="searchBox">
-        <input id="search" placeholder="Search English / Mandarin songs...">
+    <div class="search">
+        <input id="search" placeholder="Search English / Mandarin hits...">
     </div>
     <div id="list"></div>
 </div>
 
 <div class="main">
-    <div class="title" id="title">Select a song</div>
-    <iframe id="player" allow="autoplay"></iframe>
+    <div class="playerBox">
+        <div id="title">Select a song</div>
+        <iframe id="player" allow="autoplay"></iframe>
+    </div>
 </div>
 
 </div>
 
 <script>
-const API_KEY = "YOUR_API_KEY";
+const API_KEY = "YOUR_YOUTUBE_API_KEY";
 
-// 🔥 Query dibuat untuk menghasilkan banyak lagu (≈1000 hasil total)
+// 🔥 query untuk bikin ~1000 lagu dari API
 const queries = [
-    "top english songs 2025",
-    "english hits playlist",
-    "taylor swift hits",
+    "english pop hits 2025",
+    "top english songs playlist",
+    "taylor swift hits playlist",
     "billie eilish songs",
-    "ed sheeran playlist",
-    "top mandarin songs",
+    "ed sheeran best songs",
     "mandarin pop hits",
-    "jay chou songs",
-    "chinese pop music",
-    "c-pop hits playlist"
+    "chinese songs playlist",
+    "jay chou hits",
+    "c-pop songs",
+    "viral tiktok songs"
 ];
 
 let songs = [];
 
-// 🎯 ambil dari YouTube API
-async function fetchSongs(q) {
+// ambil dari YouTube
+async function getSongs(q) {
     const url =
     `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=50&q=${encodeURIComponent(q)}&key=${API_KEY}`;
 
@@ -132,19 +142,19 @@ async function fetchSongs(q) {
     }));
 }
 
-// 🔥 load banyak lagu (gabungan semua query)
-async function loadSongs() {
+// load semua lagu
+async function loadAll() {
     songs = [];
 
     for (let q of queries) {
-        let result = await fetchSongs(q);
+        let result = await getSongs(q);
         songs = songs.concat(result);
     }
 
     render(songs);
 }
 
-// 🎵 render list
+// tampilkan list
 function render(list) {
     const box = document.getElementById("list");
     box.innerHTML = "";
@@ -160,16 +170,16 @@ function render(list) {
     });
 }
 
-// ▶️ play video
+// play (MP3 STYLE FEEL = embedded video hidden player)
 function play(song) {
     document.getElementById("title").innerText = song.title;
 
     document.getElementById("player").src =
-    `https://www.youtube.com/embed/${song.id}?autoplay=1`;
+    `https://www.youtube.com/embed/${song.id}?autoplay=1&controls=1`;
 }
 
-// 🔎 search
-document.getElementById("search").addEventListener("input", (e) => {
+// search
+document.getElementById("search").addEventListener("input", e => {
     let val = e.target.value.toLowerCase();
 
     let filtered = songs.filter(s =>
@@ -179,7 +189,7 @@ document.getElementById("search").addEventListener("input", (e) => {
     render(filtered);
 });
 
-loadSongs();
+loadAll();
 </script>
 
 </body>

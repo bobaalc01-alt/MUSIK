@@ -1,15 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Online Music Player</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+    }
+
+    header {
+      background: #1f1f1f;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .container {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+
+    .left {
+      width: 35%;
+      background: #181818;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    input {
+      background: #2a2a2a;
+      color: white;
+    }
+
+    button {
+      background: #ff2d55;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #ff4470;
+    }
+
+    .song {
+      background: #2a2a2a;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .song:hover {
+      background: #3a3a3a;
+    }
+
+    audio {
+      width: 80%;
+      margin-top: 20px;
+    }
+
+    .title {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>🎵 Online Music Player (No Ads)</header>
+
+<div class="container">
+
+  <!-- LEFT: Playlist + Input -->
+  <div class="left">
+
+    <input id="titleInput" placeholder="Judul lagu..." />
+    <input id="urlInput" placeholder="Link MP3 (https://...mp3)" />
+    <button onclick="addSong()">➕ Tambah Lagu</button>
+
+    <div id="playlist"></div>
+  </div>
+
+  <!-- RIGHT: Player -->
+  <div class="right">
+    <div class="title" id="nowTitle">Belum ada lagu dipilih</div>
+
+    <audio id="audio" controls></audio>
+  </div>
+
+</div>
+
 <script>
   const playlist = [];
 
-  // 🔥 Generate 1000 lagu otomatis
-  function generate1000Songs() {
-    for (let i = 1; i <= 1000; i++) {
-      playlist.push({
-        title: "Lagu " + i,
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-      });
+  function addSong() {
+    const title = document.getElementById("titleInput").value;
+    const url = document.getElementById("urlInput").value;
+
+    if (!title || !url) {
+      alert("Isi judul dan link musik!");
+      return;
     }
+
+    playlist.push({ title, url });
     renderPlaylist();
+
+    document.getElementById("titleInput").value = "";
+    document.getElementById("urlInput").value = "";
   }
 
   function renderPlaylist() {
@@ -34,7 +156,7 @@
 
     title.innerText = "▶ " + playlist[index].title;
   }
-
-  // 🔥 langsung jalan saat web dibuka
-  generate1000Songs();
 </script>
+
+</body>
+</html>

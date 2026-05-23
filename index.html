@@ -6,130 +6,252 @@
 <title>Spotify Panda 🐼</title>
 
 <style>
-body{
-    margin:0;
-    font-family:Arial;
-    background:#0a0a0a;
-    color:white;
-    display:flex;
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
 }
 
-/* SIDEBAR PANDA */
+body{
+background:#121212;
+color:white;
+overflow:hidden;
+}
+
+/* BACKGROUND */
+
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+z-index:-1;
+overflow:hidden;
+}
+
+.circle{
+position:absolute;
+border-radius:50%;
+background:#1db95433;
+animation:float 12s linear infinite;
+}
+
+@keyframes float{
+from{
+transform:translateY(100vh) scale(0);
+}
+to{
+transform:translateY(-100vh) scale(1.5);
+}
+}
+
+/* SIDEBAR */
+
 .sidebar{
-    width:220px;
-    background:#000;
-    border-right:1px solid #222;
-    padding:15px;
+position:fixed;
+left:0;
+top:0;
+width:240px;
+height:100%;
+background:black;
+padding:20px;
+border-right:1px solid #222;
 }
 
 .logo{
-    font-size:20px;
-    font-weight:bold;
-    color:white;
+font-size:24px;
+font-weight:bold;
+margin-bottom:30px;
 }
 
 .logo span{
-    color:#00ff88;
+color:#1db954;
 }
 
 .menu{
-    margin:10px 0;
-    color:#aaa;
-    cursor:pointer;
-    font-size:14px;
+padding:14px;
+margin:8px 0;
+border-radius:10px;
+cursor:pointer;
+color:#aaa;
+transition:0.3s;
 }
 
 .menu:hover{
-    color:white;
+background:#1a1a1a;
+color:white;
 }
 
 /* MAIN */
+
 .main{
-    flex:1;
-    padding:15px;
+margin-left:240px;
+padding:20px;
+height:calc(100vh - 120px);
+overflow:auto;
 }
 
-h2{
-    color:#00ff88;
+.title{
+font-size:30px;
+margin-bottom:20px;
+color:#1db954;
 }
 
-/* SEARCH */
-input{
-    width:100%;
-    padding:10px;
-    margin:5px 0;
-    background:#111;
-    border:1px solid #333;
-    color:white;
-    border-radius:8px;
+.search{
+width:100%;
+padding:14px;
+background:#1a1a1a;
+border:none;
+border-radius:12px;
+color:white;
+margin-bottom:20px;
 }
 
-/* SONG */
+/* SONG CARD */
+
 .song{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px;
-    margin:6px 0;
-    background:#121212;
-    border:1px solid #222;
-    border-radius:8px;
-    cursor:pointer;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#181818;
+padding:15px;
+margin:10px 0;
+border-radius:12px;
+transition:0.3s;
+cursor:pointer;
 }
 
 .song:hover{
-    background:#1a1a1a;
+background:#282828;
+transform:scale(1.01);
+}
+
+.song-title{
+font-size:16px;
+font-weight:bold;
+}
+
+.song-artist{
+font-size:13px;
+color:#aaa;
 }
 
 .badge{
-    font-size:10px;
-    padding:3px 6px;
-    background:#00ff88;
-    color:black;
-    border-radius:5px;
+background:#1db954;
+color:black;
+padding:4px 8px;
+font-size:10px;
+border-radius:8px;
+margin-top:5px;
+display:inline-block;
 }
 
 /* PLAYER */
+
 .player{
-    position:fixed;
-    bottom:0;
-    left:220px;
-    right:0;
-    background:#000;
-    border-top:1px solid #222;
-    padding:10px;
+position:fixed;
+bottom:0;
+left:240px;
+right:0;
+background:#181818;
+padding:12px;
+border-top:1px solid #333;
+}
+
+.now{
+font-size:14px;
+margin-bottom:10px;
+}
+
+.controls{
+display:flex;
+gap:10px;
+margin-top:10px;
 }
 
 button{
-    padding:8px;
-    margin:2px;
-    border:none;
-    background:#00ff88;
-    font-weight:bold;
-    cursor:pointer;
-    border-radius:6px;
+padding:10px 16px;
+border:none;
+border-radius:10px;
+background:#1db954;
+font-weight:bold;
+cursor:pointer;
 }
+
+button:hover{
+opacity:0.8;
+}
+
+/* LYRICS */
+
+.lyrics{
+margin-top:10px;
+color:#1db954;
+font-size:14px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+.sidebar{
+width:70px;
+}
+
+.logo{
+font-size:14px;
+}
+
+.menu{
+font-size:11px;
+padding:8px;
+}
+
+.main{
+margin-left:70px;
+}
+
+.player{
+left:70px;
+}
+
+}
+
 </style>
 </head>
-
 <body>
+
+<!-- BG -->
+<div class="bg" id="bg"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="logo">🐼 Spotify <span>Panda</span></div>
 
-    <div class="menu">🏠 Home</div>
-    <div class="menu">🔥 Trending</div>
-    <div class="menu">🎵 Playlist</div>
-    <div class="menu">🐼 Panda Mood</div>
+<div class="logo">
+🐼 Spotify <span>Panda</span>
+</div>
+
+<div class="menu">🏠 Home</div>
+<div class="menu">🔥 Trending</div>
+<div class="menu">🎵 Playlist</div>
+<div class="menu">❤️ Favorite</div>
+
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-<h2>🐼 Spotify Panda Music</h2>
+<div class="title">
+🐼 Spotify Panda Mandarin Hits
+</div>
 
-<input id="search" placeholder="Cari lagu..." onkeyup="render()">
+<input
+class="search"
+id="search"
+placeholder="Cari lagu mandarin..."
+onkeyup="render()"
+/>
 
 <div id="list"></div>
 
@@ -138,154 +260,252 @@ button{
 <!-- PLAYER -->
 <div class="player">
 
-<div id="now">🎧 Tidak ada lagu diputar</div>
+<div class="now" id="now">
+🎧 Tidak ada lagu diputar
+</div>
 
 <audio id="audio" controls style="width:100%"></audio>
 
-<div>
-    <button onclick="prev()">⏮</button>
-    <button onclick="toggle()">▶/⏸</button>
-    <button onclick="next()">⏭</button>
+<div class="controls">
+
+<button onclick="prev()">⏮</button>
+
+<button onclick="toggle()">▶ / ⏸</button>
+
+<button onclick="next()">⏭</button>
+
+<button onclick="shuffle()">🔀 Shuffle</button>
+
+</div>
+
+<div class="lyrics" id="lyrics">
+🎤 Lirik karaoke akan tampil di sini...
 </div>
 
 </div>
 
 <script>
 
-// 💾 DATABASE LAGU PANDA (DEMO + BEBAS PAKAI)
-let songs = JSON.parse(localStorage.getItem("panda")) || [
+/* BACKGROUND */
 
-      // 🇨🇳 MANDARIN
-    
-  { title: "告白气球", artist: "Jay Chou", cat: "mandarin", url: "", fav: false },
-  { title: "青花瓷", artist: "Jay Chou", cat: "mandarin", url: "", fav: false },
-  { title: "稻香", artist: "Jay Chou", cat: "mandarin", url: "", fav: false },
-  { title: "七里香", artist: "Jay Chou", cat: "mandarin", url: "", fav: false },
+for(let i=0;i<25;i++){
 
-  { title: "江南", artist: "JJ Lin", cat: "mandarin", url: "", fav: false },
-  { title: "修炼爱情", artist: "JJ Lin", cat: "mandarin", url: "", fav: false },
-  { title: "可惜没如果", artist: "JJ Lin", cat: "mandarin", url: "", fav: false },
-  { title: "不为谁而作的歌", artist: "JJ Lin", cat: "mandarin", url: "", fav: false },
+let c=document.createElement("div");
 
-  { title: "光年之外", artist: "G.E.M.", cat: "mandarin", url: "", fav: false },
-  { title: "泡沫", artist: "G.E.M.", cat: "mandarin", url: "", fav: false },
-  { title: "多远都要在一起", artist: "G.E.M.", cat: "mandarin", url: "", fav: false },
+c.className="circle";
 
-  { title: "十年", artist: "Eason Chan", cat: "mandarin", url: "", fav: false },
-  { title: "富士山下", artist: "Eason Chan", cat: "mandarin", url: "", fav: false },
-  { title: "好久不见", artist: "Eason Chan", cat: "mandarin", url: "", fav: false },
+c.style.width=Math.random()*150+"px";
+c.style.height=c.style.width;
 
-  { title: "红豆", artist: "Faye Wong", cat: "mandarin", url: "", fav: false },
-  { title: "传奇", artist: "Faye Wong", cat: "mandarin", url: "", fav: false },
+c.style.left=Math.random()*100+"vw";
 
-  { title: "吻别", artist: "Jacky Cheung", cat: "mandarin", url: "", fav: false },
-  { title: "她来听我的演唱会", artist: "Jacky Cheung", cat: "mandarin", url: "", fav: false },
+c.style.animationDuration=
+(5+Math.random()*10)+"s";
 
-  { title: "大城小爱", artist: "Wang Leehom", cat: "mandarin", url: "", fav: false },
-  { title: "你不知道的事", artist: "Wang Leehom", cat: "mandarin", url: "", fav: false },
+document.getElementById("bg").appendChild(c);
 
-  { title: "日不落", artist: "Jolin Tsai", cat: "mandarin", url: "", fav: false },
-  { title: "倒带", artist: "Jolin Tsai", cat: "mandarin", url: "", fav: false },
-  { title: "舞娘", artist: "Jolin Tsai", cat: "mandarin", url: "", fav: false },
+}
 
-  { title: "成全", artist: "Yoga Lin", cat: "mandarin", url: "", fav: false },
-  { title: "天真有邪", artist: "Yoga Lin", cat: "mandarin", url: "", fav: false },
+/* DATABASE 100 SONG */
 
-  { title: "给我一个理由忘记", artist: "A-Lin", cat: "mandarin", url: "", fav: false },
-  { title: "遇见", artist: "Stefanie Sun", cat: "mandarin", url: "", fav: false },
-  { title: "我怀念的", artist: "Stefanie Sun", cat: "mandarin", url: "", fav: false },
+let songs=[];
 
-  { title: "突然好想你", artist: "Mayday", cat: "mandarin", url: "", fav: false },
-  { title: "倔强", artist: "Mayday", cat: "mandarin", url: "", fav: false },
-  { title: "温柔", artist: "Mayday", cat: "mandarin", url: "", fav: false },
+const demoUrls=[
 
-  { title: "年少有为", artist: "Li Ronghao", cat: "mandarin", url: "", fav: false },
-  { title: "模特", artist: "Li Ronghao", cat: "mandarin", url: "", fav: false },
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3"
 
-  { title: "隐形的翅膀", artist: "Angela Chang", cat: "mandarin", url: "", fav: false },
-  { title: "欧若拉", artist: "Angela Chang", cat: "mandarin", url: "", fav: false },
-
-  { title: "逆战", artist: "Zhang Jie", cat: "mandarin", url: "", fav: false },
-  { title: "天下", artist: "Zhang Jie", cat: "mandarin", url: "", fav: false },
-
-  { title: "烟火里的尘埃", artist: "Hua Chenyu", cat: "mandarin", url: "", fav: false },
-  { title: "寻", artist: "Hua Chenyu", cat: "mandarin", url: "", fav: false },
-
-  { title: "有何不可", artist: "Xu Song", cat: "mandarin", url: "", fav: false },
-  { title: "清明雨上", artist: "Xu Song", cat: "mandarin", url: "", fav: false },
-
-  { title: "那些年", artist: "Hu Xia", cat: "mandarin", url: "", fav: false },
-  { title: "大鱼", artist: "Zhou Shen", cat: "mandarin", url: "", fav: false },
-  { title: "达拉崩吧", artist: "Zhou Shen", cat: "mandarin", url: "", fav: false }
-    
 ];
 
-let index = 0;
+const mandarinHits=[
 
-function save(){
-    localStorage.setItem("panda",JSON.stringify(songs));
+"告白气球",
+"稻香",
+"青花瓷",
+"七里香",
+"光年之外",
+"泡沫",
+"那些年",
+"大鱼",
+"修炼爱情",
+"十年",
+"富士山下",
+"遇见",
+"突然好想你",
+"年少有为",
+"逆战",
+"天下",
+"达拉崩吧",
+"有何不可",
+"清明雨上",
+"隐形的翅膀"
+
+];
+
+for(let i=0;i<100;i++){
+
+songs.push({
+
+title:mandarinHits[i % mandarinHits.length]+" "+(i+1),
+
+artist:"Mandarin Artist "+(i+1),
+
+cat:"Mandarin",
+
+url:demoUrls[i % demoUrls.length],
+
+lyric:"🎤 Panda Karaoke Lyric "+(i+1)
+
+});
+
 }
 
-// 🎧 PLAY
+/* PLAYER */
+
+let index=0;
+
+/* PLAY */
+
 function play(i){
-    index = i;
-    let s = songs[i];
 
-    let audio = document.getElementById("audio");
-    audio.src = s.url;
-    audio.play();
+index=i;
 
-    document.getElementById("now").innerText =
-        "🐼 Now Playing: " + s.title + " - " + s.artist;
+let s=songs[i];
+
+let audio=document.getElementById("audio");
+
+audio.src=s.url;
+
+audio.load();
+
+audio.play()
+.then(()=>{
+
+console.log("music play");
+
+})
+.catch(err=>{
+
+console.log(err);
+
+alert("Klik tombol play browser");
+
+});
+
+document.getElementById("now").innerHTML=
+"🎧 Now Playing: "+s.title+" - "+s.artist;
+
+document.getElementById("lyrics").innerHTML=
+s.lyric;
+
 }
 
-// ▶/⏸
+/* TOGGLE */
+
 function toggle(){
-    let a = document.getElementById("audio");
-    a.paused ? a.play() : a.pause();
+
+let a=document.getElementById("audio");
+
+a.paused ? a.play() : a.pause();
+
 }
 
-// NEXT
+/* NEXT */
+
 function next(){
-    index = (index + 1) % songs.length;
-    play(index);
+
+index=(index+1)%songs.length;
+
+play(index);
+
 }
 
-// PREV
+/* PREV */
+
 function prev(){
-    index = (index - 1 + songs.length) % songs.length;
-    play(index);
+
+index=(index-1+songs.length)%songs.length;
+
+play(index);
+
 }
 
-// 🔎 RENDER
+/* SHUFFLE */
+
+function shuffle(){
+
+let r=Math.floor(Math.random()*songs.length);
+
+play(r);
+
+}
+
+/* AUTO NEXT */
+
+document.getElementById("audio")
+.addEventListener("ended",()=>{
+
+next();
+
+});
+
+/* SEARCH */
+
 function render(){
 
-    let list = document.getElementById("list");
-    let search = document.getElementById("search").value.toLowerCase();
+let list=document.getElementById("list");
 
-    list.innerHTML = "";
+let search=document
+.getElementById("search")
+.value.toLowerCase();
 
-    songs.forEach((s,i)=>{
+list.innerHTML="";
 
-        if(
-            s.title.toLowerCase().includes(search) ||
-            s.artist.toLowerCase().includes(search)
-        ){
+songs.forEach((s,i)=>{
 
-            let div = document.createElement("div");
-            div.className = "song";
+if(
 
-            div.innerHTML = `
-                <div onclick="play(${i})">
-                    🎵 ${s.title} - ${s.artist}
-                    <span class="badge">${s.cat}</span>
-                </div>
-                <div>🐼</div>
-            `;
+s.title.toLowerCase().includes(search)
+||
+s.artist.toLowerCase().includes(search)
 
-            list.appendChild(div);
-        }
-    });
+){
+
+let div=document.createElement("div");
+
+div.className="song";
+
+div.innerHTML=`
+
+<div onclick="play(${i})">
+
+<div class="song-title">
+🎵 ${s.title}
+</div>
+
+<div class="song-artist">
+${s.artist}
+</div>
+
+<div class="badge">
+${s.cat}
+</div>
+
+</div>
+
+<div>🐼</div>
+
+`;
+
+list.appendChild(div);
+
+}
+
+});
+
 }
 
 render();

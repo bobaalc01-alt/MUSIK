@@ -1,520 +1,385 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<title>VideoGo</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PANDA Music</title>
 
 <style>
-
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Roboto',sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
 }
 
 body{
-  background:#0f0f0f;
-  color:white;
+background:#121212;
+color:white;
+overflow-x:hidden;
 }
 
-/* HEADER */
+.container{
+display:flex;
+height:100vh;
+}
 
-header{
-  position:fixed;
-  top:0;
-  width:100%;
-  height:60px;
-  background:#121212;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 15px;
-  z-index:1000;
-  border-bottom:1px solid #222;
+.sidebar{
+width:240px;
+background:#000;
+padding:20px;
 }
 
 .logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:22px;
-  font-weight:bold;
-  color:#ff0000;
+font-size:35px;
+font-weight:bold;
+color:#1DB954;
+margin-bottom:30px;
 }
 
-.logo-icon{
-  width:35px;
-  height:25px;
-  background:#ff0000;
-  border-radius:8px;
-  position:relative;
+.menu a{
+display:block;
+color:#aaa;
+text-decoration:none;
+margin:15px 0;
+transition:.3s;
 }
 
-.logo-icon::after{
-  content:'';
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-40%,-50%);
-  border-left:10px solid white;
-  border-top:7px solid transparent;
-  border-bottom:7px solid transparent;
+.menu a:hover{
+color:white;
 }
 
-.profile{
-  width:35px;
-  height:35px;
-  border-radius:50%;
-  background:#444;
+.main{
+flex:1;
+padding:20px;
+overflow:auto;
 }
 
-/* SEARCH */
-
-.search-container{
-  margin-top:70px;
-  padding:15px;
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
 }
 
-.search-box{
-  width:100%;
-  background:#1f1f1f;
-  border:none;
-  outline:none;
-  color:white;
-  padding:14px;
-  border-radius:12px;
-  font-size:16px;
+.search{
+width:300px;
+padding:12px;
+border:none;
+border-radius:30px;
+outline:none;
 }
 
-/* CATEGORY */
-
-.categories{
-  display:flex;
-  overflow-x:auto;
-  padding:0 15px 15px;
-  gap:10px;
+.region{
+padding:12px;
+border:none;
+border-radius:10px;
+background:#1DB954;
+color:white;
+font-weight:bold;
 }
 
-.categories::-webkit-scrollbar{
-  display:none;
+.song-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+gap:20px;
 }
 
-.category{
-  min-width:max-content;
-  background:#272727;
-  padding:10px 16px;
-  border-radius:20px;
-  font-size:14px;
-  cursor:pointer;
+.card{
+background:#181818;
+padding:15px;
+border-radius:15px;
+cursor:pointer;
+transition:.3s;
 }
 
-.category.active{
-  background:#ff0000;
+.card:hover{
+background:#282828;
+transform:scale(1.03);
 }
 
-/* VIDEO LIST */
-
-.video-list{
-  padding:0 15px 90px;
+.card img{
+width:100%;
+border-radius:10px;
+margin-bottom:10px;
 }
 
-.video-card{
-  margin-bottom:25px;
+.title{
+font-size:16px;
+font-weight:bold;
 }
 
-.thumbnail-container{
-  position:relative;
+.artist{
+font-size:14px;
+color:#aaa;
+margin-top:5px;
 }
 
-.thumbnail{
-  width:100%;
-  height:210px;
-  object-fit:cover;
-  border-radius:15px;
+.player{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#181818;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-top:1px solid #333;
 }
 
-.duration{
-  position:absolute;
-  bottom:10px;
-  right:10px;
-  background:rgba(0,0,0,0.8);
-  padding:4px 8px;
-  border-radius:5px;
-  font-size:12px;
+.player-info{
+display:flex;
+align-items:center;
+gap:15px;
 }
 
-.video-info{
-  display:flex;
-  margin-top:10px;
-  gap:12px;
+.player-info img{
+width:60px;
+height:60px;
+border-radius:10px;
 }
 
-.channel-avatar{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  background:#444;
+.controls button{
+background:#1DB954;
+border:none;
+padding:12px;
+border-radius:50%;
+margin:0 5px;
+cursor:pointer;
+font-size:16px;
+color:white;
 }
 
-.video-text{
-  flex:1;
+.controls button:hover{
+background:#17a74a;
 }
 
-.video-title{
-  font-size:16px;
-  font-weight:500;
-  line-height:1.4;
+audio{
+width:300px;
 }
 
-.video-meta{
-  margin-top:6px;
-  color:#aaa;
-  font-size:13px;
+@media(max-width:768px){
+
+.sidebar{
+display:none;
 }
 
-/* BUTTONS */
-
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
+.search{
+width:180px;
 }
 
-.btn{
-  border:none;
-  padding:10px 14px;
-  border-radius:10px;
-  cursor:pointer;
-  font-weight:500;
+.player{
+flex-direction:column;
+gap:10px;
 }
 
-.play-btn{
-  background:#ff0000;
-  color:white;
+audio{
+width:100%;
 }
 
-.download-btn{
-  background:#2b2b2b;
-  color:white;
 }
-
-/* PLAYER */
-
-.player-modal{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:black;
-  display:none;
-  flex-direction:column;
-  z-index:9999;
-}
-
-video{
-  width:100%;
-  margin-top:70px;
-}
-
-.player-controls{
-  padding:20px;
-}
-
-.close-btn{
-  background:red;
-  color:white;
-  border:none;
-  padding:12px;
-  border-radius:10px;
-  width:100%;
-  margin-top:20px;
-}
-
-/* NAVIGATION */
-
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  height:65px;
-  background:#121212;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  border-top:1px solid #222;
-}
-
-.nav-item{
-  text-align:center;
-  color:#bbb;
-  font-size:12px;
-}
-
-.nav-item.active{
-  color:#ff0000;
-}
-
-.nav-icon{
-  font-size:22px;
-  margin-bottom:3px;
-}
-
 </style>
 </head>
 
 <body>
 
-<header>
+<div class="container">
 
-  <div class="logo">
-    <div class="logo-icon"></div>
-    VideoGo
-  </div>
+<div class="sidebar">
+<div class="logo">🐼 PANDA</div>
 
-  <div class="profile"></div>
-
-</header>
-
-<div class="search-container">
-  <input
-    type="text"
-    class="search-box"
-    placeholder="Cari video..."
-  >
+<div class="menu">
+<a href="#">🏠 Home</a>
+<a href="#">🔥 Trending</a>
+<a href="#">🎵 Playlist</a>
+<a href="#">🌍 Region</a>
+<a href="#">❤️ Favorite</a>
+</div>
 </div>
 
-<div class="categories">
+<div class="main">
 
-  <div class="category active">Semua</div>
-  <div class="category">Gaming</div>
-  <div class="category">Musik</div>
-  <div class="category">Film</div>
-  <div class="category">Teknologi</div>
-  <div class="category">Olahraga</div>
+<div class="top">
+<input type="text" class="search" id="search" placeholder="Cari lagu...">
 
+<select class="region" id="region">
+<option value="us">USA</option>
+<option value="id">Indonesia</option>
+<option value="jp">Japan</option>
+<option value="kr">Korea</option>
+<option value="gb">UK</option>
+</select>
 </div>
 
-<div class="video-list">
+<h2>🔥 Random Hit Songs</h2>
+<br>
 
-  <!-- VIDEO 1 -->
-
-  <div class="video-card">
-
-    <div class="thumbnail-container">
-
-      <img
-        src="https://picsum.photos/600/350?1"
-        class="thumbnail"
-      >
-
-      <div class="duration">12:45</div>
-
-    </div>
-
-    <div class="video-info">
-
-      <div class="channel-avatar"></div>
-
-      <div class="video-text">
-
-        <div class="video-title">
-          Tutorial Membuat Aplikasi Streaming Hemat Data
-        </div>
-
-        <div class="video-meta">
-          VideoGo Official • 1,2 jt views • 2 hari lalu
-        </div>
-
-        <div class="actions">
-
-          <button
-            class="btn play-btn"
-            onclick="playVideo('sample.mp4')"
-          >
-            ▶ Putar
-          </button>
-
-          <button
-            class="btn download-btn"
-            onclick="downloadVideo('sample.mp4')"
-          >
-            ⬇ Download
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- VIDEO 2 -->
-
-  <div class="video-card">
-
-    <div class="thumbnail-container">
-
-      <img
-        src="https://picsum.photos/600/350?2"
-        class="thumbnail"
-      >
-
-      <div class="duration">08:10</div>
-
-    </div>
-
-    <div class="video-info">
-
-      <div class="channel-avatar"></div>
-
-      <div class="video-text">
-
-        <div class="video-title">
-          Belajar HTML Full Course Bahasa Indonesia
-        </div>
-
-        <div class="video-meta">
-          Code Academy • 980 rb views • 5 hari lalu
-        </div>
-
-        <div class="actions">
-
-          <button
-            class="btn play-btn"
-            onclick="playVideo('sample2.mp4')"
-          >
-            ▶ Putar
-          </button>
-
-          <button
-            class="btn download-btn"
-            onclick="downloadVideo('sample2.mp4')"
-          >
-            ⬇ Download
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
+<div class="song-grid" id="songs"></div>
 
 </div>
-
-<!-- PLAYER -->
-
-<div class="player-modal" id="playerModal">
-
-  <video controls id="videoPlayer">
-
-    <source
-      src=""
-      id="videoSource"
-      type="video/mp4"
-    >
-
-  </video>
-
-  <div class="player-controls">
-
-    <h2>Sedang Memutar...</h2>
-
-    <button
-      class="close-btn"
-      onclick="closePlayer()"
-    >
-      Tutup Player
-    </button>
-
-  </div>
-
 </div>
 
-<!-- NAVIGATION -->
+<div class="player">
 
-<div class="bottom-nav">
+<div class="player-info">
+<img id="cover" src="https://via.placeholder.com/60">
 
-  <div class="nav-item active">
-    <div class="nav-icon">🏠</div>
-    Home
-  </div>
+<div>
+<div id="songTitle">No song selected</div>
+<div id="songArtist" style="color:#aaa"></div>
+</div>
+</div>
 
-  <div class="nav-item">
-    <div class="nav-icon">🔥</div>
-    Trending
-  </div>
+<div class="controls">
+<button onclick="prevSong()">⏮</button>
+<button onclick="togglePlay()">▶</button>
+<button onclick="nextSong()">⏭</button>
+</div>
 
-  <div class="nav-item">
-    <div class="nav-icon">⬇</div>
-    Download
-  </div>
-
-  <div class="nav-item">
-    <div class="nav-icon">👤</div>
-    Akun
-  </div>
+<audio id="audio" controls></audio>
 
 </div>
 
 <script>
 
-function playVideo(video){
+const songsDiv=document.getElementById('songs');
+const audio=document.getElementById('audio');
+const title=document.getElementById('songTitle');
+const artist=document.getElementById('songArtist');
+const cover=document.getElementById('cover');
+const search=document.getElementById('search');
+const region=document.getElementById('region');
 
-  const modal =
-    document.getElementById('playerModal');
+let songs=[];
+let current=0;
 
-  const source =
-    document.getElementById('videoSource');
+async function loadSongs(country='us'){
 
-  const player =
-    document.getElementById('videoPlayer');
+songsDiv.innerHTML='<h3>Loading...</h3>';
 
-  source.src = video;
+const keywords=[
+'hits',
+'viral',
+'pop',
+'rock',
+'dance',
+'party',
+'love',
+'trend',
+'music',
+'top'
+];
 
-  player.load();
+const random=
+keywords[Math.floor(Math.random()*keywords.length)];
 
-  player.play();
+const url=
+`https://itunes.apple.com/search?term=${random}&media=music&limit=50&country=${country}`;
 
-  modal.style.display = 'flex';
+const res=await fetch(url);
+const data=await res.json();
+
+songs=data.results;
+
+renderSongs(songs);
+
 }
 
-function closePlayer(){
+function renderSongs(data){
 
-  const modal =
-    document.getElementById('playerModal');
+songsDiv.innerHTML='';
 
-  const player =
-    document.getElementById('videoPlayer');
+data.forEach((song,index)=>{
 
-  player.pause();
+const card=document.createElement('div');
+card.className='card';
 
-  modal.style.display = 'none';
+card.innerHTML=`
+<img src="${song.artworkUrl100}">
+<div class="title">${song.trackName}</div>
+<div class="artist">${song.artistName}</div>
+`;
+
+card.onclick=()=>playSong(index);
+
+songsDiv.appendChild(card);
+
+});
+
 }
 
-function downloadVideo(url){
+function playSong(index){
 
-  const a = document.createElement('a');
+current=index;
 
-  a.href = url;
+const song=songs[index];
 
-  a.download = url;
+audio.src=song.previewUrl;
+audio.play();
 
-  document.body.appendChild(a);
+title.innerText=song.trackName;
+artist.innerText=song.artistName;
+cover.src=song.artworkUrl100;
 
-  a.click();
-
-  document.body.removeChild(a);
 }
+
+function nextSong(){
+
+current++;
+
+if(current>=songs.length){
+current=0;
+}
+
+playSong(current);
+
+}
+
+function prevSong(){
+
+current--;
+
+if(current<0){
+current=songs.length-1;
+}
+
+playSong(current);
+
+}
+
+function togglePlay(){
+
+if(audio.paused){
+audio.play();
+}else{
+audio.pause();
+}
+
+}
+
+audio.addEventListener('ended',()=>{
+nextSong();
+});
+
+search.addEventListener('input',()=>{
+
+const value=search.value.toLowerCase();
+
+const filtered=songs.filter(song=>
+song.trackName.toLowerCase().includes(value) ||
+song.artistName.toLowerCase().includes(value)
+);
+
+renderSongs(filtered);
+
+});
+
+region.addEventListener('change',()=>{
+loadSongs(region.value);
+});
+
+loadSongs();
 
 </script>
 
